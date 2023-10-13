@@ -12,7 +12,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-purple-600"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>
       </button>
     </div>
-    <button @click="toggleChat" class="chatbot-toggle p-3.5 bg-purple-600 rounded-full absolute right-0 top-0 focus:outline-none hover:bg-purple-700">
+    <button @click="toggleChat"
+            class="chatbot-toggle p-3.5 bg-purple-600 rounded-full absolute right-0 top-0 focus:outline-none hover:bg-purple-700"
+            :class="{ pulse: !chatOpen }">
       <svg v-if="!chatOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm5 4h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1z"/></svg>
       <svg v-if="chatOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
     </button>
@@ -69,6 +71,10 @@ export default {
 </script>
 
 <style scoped>
+.main-card {
+  z-index: 1;
+}
+
 @media (min-width: 450px) {
   .main-card {
     width: 96%;
@@ -81,4 +87,24 @@ export default {
 .collapsed {
   width: 48px;
   height: 48px;
-}</style>
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+</style>

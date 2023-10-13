@@ -1,9 +1,9 @@
 <template>
   <nav class="bg-white border-gray-200">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <div class="container flex flex-wrap items-center justify-between mx-auto p-4">
       <div class="flex items-center">
         <nuxt-link to="/" class="flex items-center">
-          <img src="https://facultetus.ru/images/logos/c88854675b12151e550165ea0c9d4101.png" class="h-12 mr-3" alt="VTB Logo" />
+          <img src="../public/Logo/VTB_logo_ru.png" class="h-12 mr-3" alt="VTB Logo" />
         </nuxt-link>
         <div class="ml-4">
           <CitySelector></CitySelector>
@@ -18,7 +18,7 @@
       <div v-bind:class="{ hidden: !isMenuOpen, 'block md:flex': isMenuOpen }" class="w-full md:block md:w-auto" id="navbar-default">
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
           <li>
-            <a href="#" class="block py-2 pl-3 pr-4 rounded md:bg-transparent text-gray-900 md:p-0" aria-current="page">ВТБ ОНЛАЙН</a>
+            <a href="https://online.vtb.ru/" target="_blank" class="block py-2 pl-3 pr-4 rounded md:bg-transparent text-gray-900 md:p-0" aria-current="page">ВТБ ОНЛАЙН</a>
           </li>
           <li>
             <nuxt-link to="/map/offices" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Карта</nuxt-link>

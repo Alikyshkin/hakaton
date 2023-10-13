@@ -1,24 +1,22 @@
 <template>
-  <div class="fixed bottom-4 right-4">
-    <button @click="toggleChat" class="bg-blue-500 text-white p-4 rounded-full shadow-lg focus:outline-none">
-      <i class="fas fa-comment"></i>
-    </button>
-    <div v-if="isOpen" class="mt-4 p-4 bg-white rounded-lg shadow-lg w-64">
-      <div v-for="message in messages" :key="message.id" class="mb-2">
-        <div v-if="message.type === 'user'" class="text-right text-blue-500">
-          {{ message.text }}
-        </div>
-        <div v-else class="text-left text-gray-700">
-          {{ message.text }}
-        </div>
-      </div>
-      <div v-for="suggestion in suggestions" :key="suggestion">
-        <button @click="askQuestion(suggestion)" class="bg-gray-200 text-gray-700 rounded px-4 py-2 mb-2 mr-2">
-          {{ suggestion }}
-        </button>
-      </div>
-      <input v-model="userInput" @keyup.enter="askQuestion" class="mt-2 p-2 w-full rounded border" placeholder="Задайте ваш вопрос...">
+  <div :class="{'collapsed': !chatOpen, 'main-card': true, 'bg-white': true, 'shadow-md': true, 'rounded-lg': true, 'absolute': true }">
+    <div v-if="chatOpen" class="main-title bg-purple-600 text-white p-4 font-bold flex items-center">
+      <span>Chatbot</span>
     </div>
+    <div v-if="chatOpen" class="chat-area overflow-y-auto px-4 py-6 flex flex-col gap-3">
+      <!-- Add your chat messages here -->
+    </div>
+    <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4">
+      <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" name="message" type="text" placeholder="Type your message ..." />
+      <button class="input-send focus:outline-none" @click="send">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-purple-600"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>
+      </button>
+    </div>
+    <button @click="toggleChat" class="chatbot-toggle p-3.5 bg-purple-600 rounded-full absolute right-0 top-0 focus:outline-none hover:bg-purple-700">
+      <svg v-if="!chatOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm5 4h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1z"/></svg>
+      <svg v-if="chatOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+    </button>
+
   </div>
 </template>
 
@@ -26,32 +24,61 @@
 export default {
   data() {
     return {
-      isOpen: false,
-      userInput: '',
-      messages: [],
-      suggestions: ['Вопрос 1', 'Вопрос 2', 'Вопрос 3'],
-      faqs: {
-        'Вопрос 1': 'Ответ на вопрос 1',
-        'Вопрос 2': 'Ответ на вопрос 2',
-        'Вопрос 3': 'Ответ на вопрос 3',
-      }
+      collapsed: true,
+      message: '',
+      chatOpen: false
+
     };
   },
   methods: {
     toggleChat() {
-      this.isOpen = !this.isOpen;
+      this.chatOpen = !this.chatOpen;
     },
-    askQuestion(question = null) {
-      const query = question || this.userInput;
-      this.messages.push({ id: Date.now(), type: 'user', text: query });
-      const answer = this.faqs[query] || 'Извините, я не могу ответить на этот вопрос.';
-      this.messages.push({ id: Date.now() + 1, type: 'bot', text: answer });
-      this.userInput = '';
+    send(msg) {
+      if (this.running || !msg) return;
+      this.running = true;
+      this.addMsg(msg);
+      setTimeout(() => {
+        this.addResponseMsg(msg);
+      }, 500);
+    },
+    addMsg(msg) {
+      const div = document.createElement("div");
+      div.innerHTML = `<span class="flex-grow"></span><div class='chat-message-sent'>${msg}</div>`;
+      div.className = "chat-message-div";
+      this.$refs.messageBox.appendChild(div);
+      this.message = "";
+      this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight;
+    },
+    addResponseMsg(msg) {
+      const response = this.getResponseForMsg(msg);
+      const div = document.createElement("div");
+      div.innerHTML = `<div class='chat-message-received'>${response}</div>`;
+      div.className = "chat-message-div";
+      this.$refs.messageBox.appendChild(div);
+      this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight;
+      this.running = false;
+    },
+    getResponseForMsg(msg) {
+      // This is where you can add your custom logic to respond to messages.
+      // For now, I'm returning a simple response:
+      return `Response to: ${msg}`;
     }
   }
 };
 </script>
 
 <style scoped>
-/* Здесь можно добавить дополнительные стили, если это необходимо */
-</style>
+@media (min-width: 450px) {
+  .main-card {
+    width: 96%;
+    max-width: 400px;
+    height: calc(100% - 32px);
+    max-height: 600px;
+    margin: 16px;
+  }
+}
+.collapsed {
+  width: 48px;
+  height: 48px;
+}</style>

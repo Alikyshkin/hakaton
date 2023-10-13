@@ -1,5 +1,4 @@
 <template>
-  <Header></Header>
   <div class="bg-gray-50 p-10 rounded-md shadow-md">
     <h1 class="text-xl font-semibold mb-2">Отделения и банкоматы</h1>
     <p class="text-gray-600 mb-4">Находите отделения и банкоматы рядом с вами, используя единую карту</p>
@@ -17,18 +16,18 @@
         </span>
       </div>
     </div>
-    <button class="bg-blue-600 text-white p-2 w-full rounded-md hover:bg-blue-700">Смотреть на карте</button>
+    <nuxt-link to="/map/offices">
+      <button class="bg-blue-600 text-white p-2 w-full rounded-md hover:bg-blue-700">Смотреть на карте</button>
+    </nuxt-link>
+    <ChatBot></ChatBot>
   </div>
-
 </template>
 
 <script>
-import Header from '../components/Header.vue'
-
+import ChatBot from '../components/ChatBot.vue';
 export default {
   name: "index.vue",
-  components: {Header},
-
+  components: {ChatBot},
 }
 </script>
 

@@ -45,7 +45,7 @@ export default {
       const users = JSON.parse(localStorage.getItem('users')) || {};
       if (users[this.username] && users[this.username] === this.password) {
         localStorage.setItem('auth', 'true');
-        this.$router.push('/');  // Redirect to home page
+        window.location.href = '/';
       } else {
         alert('Неправильное имя пользователя или пароль');
       }

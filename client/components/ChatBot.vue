@@ -73,6 +73,9 @@ export default {
 <style scoped>
 .main-card {
   z-index: 1;
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
 }
 
 @media (min-width: 450px) {
@@ -87,7 +90,7 @@ export default {
 .collapsed {
   width: 48px;
   height: 48px;
-  position: absolute;
+  position: fixed;
   bottom: 15px;
   left: 15px;
 }

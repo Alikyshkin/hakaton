@@ -1,21 +1,25 @@
 <template>
   <div class="map-container ">
     <div class="position-absolute ">
-<!--    <div class="sidebar">-->
-<!--      <div v-for="point in points" :key="point.id" @click="flyTo(point)">-->
-<!--        <h3>{{ point.title }}</h3>-->
-<!--        <p>{{ point.address }}</p>-->
-<!--        <p>Рейтинг: {{ point.rating }}</p>-->
-<!--      </div>-->
-<!--    </div>-->
-    <Sidebar :offices="points" :flyTo="flyTo" />
+      <!--    <div class="sidebar">-->
+      <!--      <div v-for="point in points" :key="point.id" @click="flyTo(point)">-->
+      <!--        <h3>{{ point.title }}</h3>-->
+      <!--        <p>{{ point.address }}</p>-->
+      <!--        <p>Рейтинг: {{ point.rating }}</p>-->
+      <!--      </div>-->
+      <!--    </div>-->
+      <Sidebar :offices="points" :flyTo="flyTo" />
     </div>
   </div>
   <YandexMap
-      :coordinates="coordinates"
+      :coordinates="[55.755573, 37.617296]"
       :zoom="zoom"
   >
-    <YandexMarker :coordinates="coordinates" :marker-id="123" />
+    <YandexMarker :coordinates="myCoordinates" :marker-id="123" />
+    <div v-for="point in points" :key="point.id" @click="flyTo(point)">
+      <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" />
+    </div>
+
   </YandexMap>
 </template>
 
@@ -37,14 +41,9 @@ export default {
   data() {
     return {
       coordinates: null,
-      zoom: 15,
-      points: [
-        {
-          title: "1",
-          address: "Пулковская улица 8к3",
-          rating: 5
-        }
-      ]
+      myCoordinates: null,
+      zoom: 13,
+      points: null
     };
   },
   mounted() {
@@ -54,6 +53,7 @@ export default {
   methods: {
     fetchOffices() {
       this.points = officesData;
+      console.log(this.points[0])
     },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];
@@ -61,7 +61,7 @@ export default {
     fetchUserLocation() {
       this.getUserLocation(
           (latitude, longitude) => {
-            this.coordinates = [latitude, longitude];
+            this.myCoordinates = [latitude, longitude];
           },
           errorMessage => {
             console.error(errorMessage);

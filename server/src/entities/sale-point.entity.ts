@@ -7,7 +7,7 @@ export class SalePoint {
     id: number;
 
     @Column({ type: 'varchar', length: 255 })
-    salesPointName: string;
+    salePointName: string;
 
     @Column({ type: 'varchar', length: 255 })
     address: string;
@@ -24,10 +24,10 @@ export class SalePoint {
     @OneToMany(() => OpenHour, openHour => openHour.salePointForOpenHoursIndividual, { cascade: true, eager: true })
     openHoursIndividual: OpenHour[];
 
-    @Column({ type: 'varchar', length: 64 })
+    @Column({ type: 'varchar', length: 128 })
     officeType: string;
 
-    @Column({ type: 'varchar', length: 64 })
+    @Column({ type: 'varchar', length: 128 })
     salePointFormat: string;
 
     @Column({ type: 'boolean', default: false })
@@ -42,9 +42,9 @@ export class SalePoint {
     @Column({ type: 'double precision' })
     longitude: number;
 
-    @Column({ type: 'varchar', length: 128 })
+    @Column({ type: 'varchar', length: 128, nullable: true })
     metroStation: string;
 
-    @Column({ type: 'boolean', default: false })
+    @Column({ type: 'boolean', default: false, nullable: true })
     kep: boolean;
 }

@@ -1,15 +1,17 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { DayOfWeek } from "../enums/day-of-week.enum";
 import { SalePoint } from "./sale-point.entity";
+import {ApiProperty} from "@nestjs/swagger";
 
 @Entity()
 export class OpenHour {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'enum', enum: DayOfWeek })
-    day: DayOfWeek;
+    @ApiProperty()
+    @Column({ type: 'varchar', length: 100, nullable: true })
+    days: string;
 
+    @ApiProperty()
     @Column({ type: 'varchar', length: 255, nullable: true })
     hours: string;
 

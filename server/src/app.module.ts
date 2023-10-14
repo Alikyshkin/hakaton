@@ -9,6 +9,9 @@ import {Atm} from "./entities/atm.entity";
 import {ServiceActivity} from "./entities/service-activity.entity";
 import {ServiceCapability} from "./entities/service-capability.entity";
 import {OpenHour} from "./entities/open-hour.entity";
+import {SalePointController} from "./sale-point/sale-point.controller";
+import { SalePointModule } from './sale-point/sale-point.module';
+import { AtmModule } from './atm/atm.module';
 
 @Module({
   imports: [
@@ -27,6 +30,8 @@ import {OpenHour} from "./entities/open-hour.entity";
       }),
       inject: [ConfigService],
     }),
+    SalePointModule,
+    AtmModule,
   ],
   controllers: [AppController],
   providers: [AppService],

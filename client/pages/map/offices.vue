@@ -15,10 +15,15 @@
       :coordinates="[55.755573, 37.617296]"
       :zoom="zoom"
   >
-    <YandexMarker :coordinates="myCoordinates" :marker-id="123" />
+    <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
+    <YandexMarker :coordinates="myCoordinates" :marker-id="123"  />
     <div v-for="point in points" :key="point.id" @click="flyTo(point)">
-      <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" />
+      <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" :options="{  preset: 'islands#greenIcon'}" />
     </div>
+    <div v-for="a in atm" :key="a.id" @click="flyTo(a)">
+      <YandexMarker :coordinates="[a.latitude, a.longitude]" :marker-id="a.id" :options="{  preset: 'islands#redIcon'}" />
+    </div>
+    </YandexClusterer>
 
   </YandexMap>
 </template>
@@ -28,6 +33,7 @@ import { ref } from 'vue';
 import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
 import Sidebar from '../../components/Sidebar.vue';  // Assuming Sidebar is in the same folder
 import officesData from '../../data/offices.json';  // Adjust path accordingly
+import atmData from '../../data/atms.json';  // Adjust path accordingly
 
 export default {
   name: "offices",
@@ -42,18 +48,24 @@ export default {
     return {
       coordinates: null,
       myCoordinates: null,
-      zoom: 13,
-      points: null
+      zoom: 10,
+      points: null,
+      atm: null
     };
   },
   mounted() {
     this.fetchOffices();
+    this.fetchATM();
     this.fetchUserLocation();
   },
   methods: {
     fetchOffices() {
       this.points = officesData;
       console.log(this.points[0])
+    },
+    fetchATM() {
+      this.atm = atmData.atms;
+      console.log(this.atm[0])
     },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];
@@ -97,6 +109,7 @@ export default {
 .map-container {
   display: flex;
 }
+
 
 .sidebar {
   position: absolute;

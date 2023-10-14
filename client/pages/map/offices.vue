@@ -1,30 +1,55 @@
 <template>
   <div class="map-container ">
     <div class="position-absolute ">
-      <!--    <div class="sidebar">-->
-      <!--      <div v-for="point in points" :key="point.id" @click="flyTo(point)">-->
-      <!--        <h3>{{ point.title }}</h3>-->
-      <!--        <p>{{ point.address }}</p>-->
-      <!--        <p>Рейтинг: {{ point.rating }}</p>-->
-      <!--      </div>-->
-      <!--    </div>-->
       <div class="bg-white h-1/2 w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
         <!-- Buttons to toggle view -->
         <div class="mb-4">
-          <button @click="setActiveView('all')" class="mr-2 px-4 py-2 border rounded ">Все</button>
-          <button @click="setActiveView('offices')" class="mr-2 px-4 py-2 border rounded">Офисы</button>
-          <button @click="setActiveView('atms')" class="px-4 py-2 border rounded">Банкоматы</button>
+          <button
+              @click="setActiveView('all')"
+              class="mr-2 px-4 py-2 border rounded"
+              :class="{ 'bg-blue-500 text-white': activeView === 'all' }"
+          >
+            Все
+          </button>
+          <button
+              @click="setActiveView('offices')"
+              class="mr-2 px-4 py-2 border rounded"
+              :class="{ 'bg-blue-500 text-white': activeView === 'offices' }"
+          >
+            Офисы
+          </button>
+          <button
+              @click="setActiveView('atms')"
+              class="px-4 py-2 border rounded"
+              :class="{ 'bg-blue-500 text-white': activeView === 'atms' }"
+          >
+            Банкоматы
+          </button>
+        </div>
+
+        <div class="mb4">
+          <div class="ml-4 inline-flex">
+            <input type="checkbox" id="individual" value="individual" v-model="selectedTypes" class="mr-1"/>
+            <label for="individual" class="mr-2">Физ. лицо</label>
+            <input type="checkbox" id="corporate" value="corporate" v-model="selectedTypes" class="mr-1"/>
+            <label for="corporate">Юр. лицо</label>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <input type="text" v-model="searchQuery" placeholder="Поиск по отделениям" class="w-full p-2 mb-2 border rounded"/>
+          <!-- ... остальные кнопки и чекбоксы ... -->
         </div>
 
         <!-- Offices -->
-        <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in points" :key="point.salePointName" @click="flyTo(point)" class="hover:cursor-pointer hover:bg-gray-100">
+        <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.salePointName" @click="flyTo(point)" class="hover:cursor-pointer hover:bg-gray-100">
           <h3 class="text-xl font-bold mb-2">{{ point.salePointName }}</h3>
           <p class="mb-1">{{ point.address }}</p>
           <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
         </div>
 
         <!-- ATMs -->
-        <div v-if="activeView === 'all' || activeView === 'atms'" v-for="atm in atms" :key="atm.address" @click="flyTo(atm)" class="hover:cursor-pointer hover:bg-gray-100">
+        <div v-if="activeView === 'all' || activeView === 'atms'" v-for="atm in filteredAtms" :key="atm.address" @click="flyTo(atm)" class="hover:cursor-pointer hover:bg-gray-100">
           <h3 class="text-xl font-bold mb-2">{{ atm.address }}</h3>
           <p class="mb-1">Круглосуточно: {{ atm.allDay ? 'Да' : 'Нет' }}</p>
           <p class="mb-1">Поддержка для инвалидов: {{ atm.services.wheelchair.serviceCapability }}</p>
@@ -46,11 +71,11 @@
   >
     <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
     <YandexMarker :coordinates="myCoordinates" :marker-id="123"  />
-      <div v-for="point in points" :key="point.id" @click="flyTo(point)" v-if="activeView === 'all' || activeView === 'offices'">
-        <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" :options="{ preset: 'islands#greenIcon'}" />
+      <div v-for="point in points" :key="point.address" @click="flyTo(point)" v-if="activeView === 'all' || activeView === 'offices'">
+        <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address" :options="{ preset: 'islands#greenIcon'}" />
       </div>
-      <div v-for="atm in atms" :key="atm.id" @click="flyTo(atm)" v-if="activeView === 'all' || activeView === 'atms'">
-        <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.id" :options="{ preset: 'islands#redIcon'}" />
+      <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)" v-if="activeView === 'all' || activeView === 'atms'">
+        <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address" :options="{ preset: 'islands#redIcon'}" />
       </div>
     </YandexClusterer>
 
@@ -66,12 +91,10 @@ import atmData from '../../data/atms.json';  // Adjust path accordingly
 
 export default {
   name: "offices",
-
   components: {
     YandexMap: yandexMap,
     YandexMarker: yandexMarker,
-    YandexClusterer: yandexClusterer,
-    Sidebar
+    YandexClusterer: yandexClusterer
   },
   data() {
     return {
@@ -82,7 +105,8 @@ export default {
       atms: null,
       selectedType: 'all',
       activeView: 'all',  // Initially show all
-
+      selectedTypes: [],
+      searchQuery: '',
     };
   },
   mounted() {
@@ -97,11 +121,9 @@ export default {
     },
     fetchOffices() {
       this.points = officesData;
-      console.log(this.points[0])
     },
     fetchATM() {
       this.atms = atmData.atms;
-      console.log(this.atms[0])
     },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];
@@ -134,6 +156,16 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    filteredPoints() {
+      if (!this.points) return [];
+      return this.points
+    },
+    filteredAtms() {
+      if (!this.atms) return [];
+      return this.atms
+    }
   }
 };
 </script>
@@ -164,5 +196,10 @@ export default {
   left: 15px;
   height: 80vh;
   z-index: 1;
+}
+
+.button-active {
+  background-color: #3490dc; /* blue */
+  color: white;
 }
 </style>

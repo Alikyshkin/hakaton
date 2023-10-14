@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white border-gray-200">
+  <nav>
     <div class="container flex flex-wrap items-center justify-between mx-auto pb-4 pt-4">
       <div class="flex items-center">
         <nuxt-link to="/" class="flex items-center">
@@ -47,6 +47,7 @@ export default {
     return {
       isMenuOpen: false,
       isAuthenticated: process.client ? this.checkAuthStatus() : false,  // обновлено здесь
+      isDarkMode: false
     }
   },
   methods: {
@@ -64,12 +65,28 @@ export default {
         localStorage.setItem('auth', 'false');
       }
       this.isAuthenticated = false;
+    },
+    toggleTheme() {
+      this.isDarkMode = !this.isDarkMode;
+    }
+  },
+  watch: {
+    isDarkMode(newVal) {
+      if (process.client) {
+        document.documentElement.setAttribute('data-theme', newVal ? 'dark' : 'light');
+      }
+    }
+  },
+  mounted() {
+    if (process.client) {
+      this.isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
     }
   }
 }
 </script>
 
 <style scoped>
+
 .mobile-menu {
   z-index: 2;
 }

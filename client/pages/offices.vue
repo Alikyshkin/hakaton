@@ -68,14 +68,23 @@
           <h2 class="font-bold mb-2">{{ selectedPoint.salePointName || selectedPoint.address }}</h2>
 
           <!-- Details for office -->
-          <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}</p>
-          <p v-if="typeof selectedPoint.rko !== 'undefined'" class="mb-2"><span class="font-bold">РКО: </span>{{ selectedPoint.rko ? 'Да' : 'Нет' }}</p>
-          <p v-if="selectedPoint.officeType" class="mb-2"><span class="font-bold">Тип офиса: </span>{{ selectedPoint.officeType }}</p>
-          <p v-if="selectedPoint.salePointFormat" class="mb-2"><span class="font-bold">Формат отделения: </span>{{ selectedPoint.salePointFormat }}</p>
-          <p v-if="typeof selectedPoint.suoAvailability !== 'undefined'" class="mb-2"><span class="font-bold">Наличие СУО: </span>{{ selectedPoint.suoAvailability ? 'Да' : 'Нет' }}</p>
-          <p v-if="typeof selectedPoint.hasRamp !== 'undefined'" class="mb-2"><span class="font-bold">Наличие рампы: </span>{{ selectedPoint.hasRamp ? 'Да' : 'Нет' }}</p>
-          <p v-if="selectedPoint.metroStation" class="mb-2"><span class="font-bold">Станция метро: </span>{{ selectedPoint.metroStation }}</p>
-          <p v-if="typeof selectedPoint.kep !== 'undefined'" class="mb-2"><span class="font-bold">КЕП: </span>{{ selectedPoint.kep ? 'Да' : 'Нет' }}</p>
+          <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}
+          </p>
+          <p v-if="typeof selectedPoint.rko !== 'undefined'" class="mb-2"><span
+              class="font-bold">РКО: </span>{{ selectedPoint.rko ? 'Да' : 'Нет' }}</p>
+          <p v-if="selectedPoint.officeType" class="mb-2"><span
+              class="font-bold">Тип офиса: </span>{{ selectedPoint.officeType }}</p>
+          <p v-if="selectedPoint.salePointFormat" class="mb-2"><span
+              class="font-bold">Формат отделения: </span>{{ selectedPoint.salePointFormat }}</p>
+          <p v-if="typeof selectedPoint.suoAvailability !== 'undefined'" class="mb-2"><span class="font-bold">Наличие СУО: </span>{{
+              selectedPoint.suoAvailability ? 'Да' : 'Нет'
+            }}</p>
+          <p v-if="typeof selectedPoint.hasRamp !== 'undefined'" class="mb-2"><span
+              class="font-bold">Наличие рампы: </span>{{ selectedPoint.hasRamp ? 'Да' : 'Нет' }}</p>
+          <p v-if="selectedPoint.metroStation" class="mb-2"><span
+              class="font-bold">Станция метро: </span>{{ selectedPoint.metroStation }}</p>
+          <p v-if="typeof selectedPoint.kep !== 'undefined'" class="mb-2"><span
+              class="font-bold">КЕП: </span>{{ selectedPoint.kep ? 'Да' : 'Нет' }}</p>
           <div v-if="selectedPoint.openHours" class="mb-2">
             <span class="font-bold">Часы работы: </span>
             <div v-for="hour in selectedPoint.openHours" :key="hour.id" class="mb-1">
@@ -90,7 +99,8 @@
           </div>
 
           <!-- Details for ATM -->
-          <p v-if="typeof selectedPoint.allDay !== 'undefined'" class="mb-2"><span class="font-bold">Круглосуточно: </span>{{ selectedPoint.allDay ? 'Да' : 'Нет' }}</p>
+          <p v-if="typeof selectedPoint.allDay !== 'undefined'" class="mb-2"><span
+              class="font-bold">Круглосуточно: </span>{{ selectedPoint.allDay ? 'Да' : 'Нет' }}</p>
           <div v-if="selectedPoint.serviceCapability" class="mb-2">
             <span class="font-bold">Возможность оказания услуги: </span>
             <p>Поддержка RUB: {{ translateSupport(selectedPoint.serviceCapability.supportsRub) }}</p>
@@ -116,7 +126,7 @@
 
           <button
               @click="openYandexMapsRoute(selectedPoint)"
-              class="bg-blue-500 text-white px-4 py-2 rounded-full mb-2"
+              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full"
           >
             Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
           </button>
@@ -125,13 +135,15 @@
         <div v-else>
           <!-- Offices -->
           <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.id"
-               @click="selectPoint(point)" class="hover:cursor-pointer hover:bg-gray-100 mb-4 p-2">
-            <h5 class="text-md font-bold mb-2">{{ point.salePointName }}</h5>
-            <p class="mb-1">{{ point.address }}</p>
-            <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
+               @click="selectPoint(point)"
+               class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
+            <div class="flex items-center">
+              <div class="bg-red-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
+              <p class="mb-1">{{ point.address }}</p>
+            </div>
             <button
                 @click="openYandexMapsRoute(point)"
-                class="bg-blue-500 text-white px-4 py-2 rounded mb-2"
+                class="bg-blue-500 text-white px-1 py-2 rounded-full w-full"
             >
               Проложить маршрут ({{ getRouteDistance(point) }} км)
             </button>
@@ -139,12 +151,15 @@
 
           <!-- ATMs -->
           <div v-if="activeView === 'all' || activeView === 'atms'" v-for="atm in filteredAtms" :key="atm.id"
-               @click="selectPoint(atm)" class="hover:cursor-pointer hover:bg-gray-100">
-            <h5 class="text-md font-bold mb-2">{{ atm.address }}</h5>
-            <p class="mb-1">Круглосуточно: {{ atm.allDay ? 'Да' : 'Нет' }}</p>
+               @click="selectPoint(atm)"
+               class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
+            <div class="flex items-center">
+              <div class="bg-red-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
+              <p class="mb-1">{{ atm.address }}</p>
+            </div>
             <button
                 @click.stop="openYandexMapsRoute(atm)"
-                class="bg-blue-500 text-white px-4 py-2 rounded"
+                class="bg-blue-500 text-white px-2 py-2 rounded-full w-full"
             >
               Проложить маршрут ({{ getRouteDistance(atm) }} км)
             </button>
@@ -172,7 +187,9 @@
           </template>
         </YandexMarker>
       </div>
-      <YandexMarker v-if="activeView === 'offices-one' && CurrentChoice.salePointName" :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address" :options="{ preset: 'islands#greenIcon'}">
+      <YandexMarker v-if="activeView === 'offices-one' && CurrentChoice.salePointName"
+                    :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
+                    :options="{ preset: 'islands#greenIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -187,7 +204,9 @@
           </template>
         </YandexMarker>
       </div>
-      <YandexMarker v-if="activeView === 'atms-one' && !CurrentChoice.salePointName" :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address" :options="{ preset: 'islands#redIcon'}">
+      <YandexMarker v-if="activeView === 'atms-one' && !CurrentChoice.salePointName"
+                    :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
+                    :options="{ preset: 'islands#redIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -258,16 +277,22 @@ export default {
   methods: {
     translateSupport(value) {
       switch (value) {
-        case 'SUPPORTED': return 'Поддерживается';
-        case 'UNSUPPORTED': return 'Не поддерживается';
-        default: return 'Неизвестно';
+        case 'SUPPORTED':
+          return 'Поддерживается';
+        case 'UNSUPPORTED':
+          return 'Не поддерживается';
+        default:
+          return 'Неизвестно';
       }
     },
     translateAvailability(value) {
       switch (value) {
-        case 'AVAILABLE': return 'Доступно';
-        case 'UNAVAILABLE': return 'Недоступно';
-        default: return 'Неизвестно';
+        case 'AVAILABLE':
+          return 'Доступно';
+        case 'UNAVAILABLE':
+          return 'Недоступно';
+        default:
+          return 'Неизвестно';
       }
     },
     resetSelectedPoint() {
@@ -277,7 +302,7 @@ export default {
       // this.setActiveView('all');
     },
     getRouteDistance(point) {
-      const { latitude, longitude } = point;
+      const {latitude, longitude} = point;
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
       const distance = calculateDistance(latitude, longitude, myLat, myLong);
@@ -285,7 +310,7 @@ export default {
     },
     openYandexMapsRoute(point) {
       event.stopPropagation();
-      const { latitude, longitude } = point;
+      const {latitude, longitude} = point;
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
 
@@ -372,7 +397,7 @@ export default {
     filteredPoints() {
       if (!this.points) return [];
       return this.points.sort((a, b) => {
-            return this.getRouteDistance(a) - this.getRouteDistance(b);
+        return this.getRouteDistance(a) - this.getRouteDistance(b);
       });
     },
     filteredAtms() {

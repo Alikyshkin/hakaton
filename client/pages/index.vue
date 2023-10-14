@@ -1,6 +1,5 @@
 <template>
   <div>
-    <ChatBot></ChatBot>
     <div class="bg-gray-50 p-10 rounded-md shadow-md">
       <div class="container items-center mx-auto">
         <h1 class="text-xl font-semibold mb-2">Отделения и банкоматы</h1>
@@ -11,7 +10,7 @@
 
           <!-- Add your pins here if necessary -->
 
-          <nuxt-link to="/map/offices">
+          <nuxt-link to="/offices">
             <button
                 class="bg-blue-600 text-white p-2 sm:w-full md:w-full lg:w-full lg:px-72 rounded-md hover:bg-blue-700">
               Смотреть на карте
@@ -25,11 +24,9 @@
 </template>
 
 <script>
-import ChatBot from '../components/ChatBot.vue';
 
 export default {
   name: "index.vue",
-  components: {ChatBot},
 }
 </script>
 

@@ -76,12 +76,24 @@
 
   >
     <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
-    <YandexMarker :coordinates="myCoordinates" :marker-id="123"  />
-      <div v-for="point in points" :key="point.address" @click="flyTo(point)" v-if="activeView === 'all' || activeView === 'offices'">
-        <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address" :options="{ preset: 'islands#greenIcon'}" />
+    <YandexMarker :coordinates="myCoordinates" :marker-id="12345">
+      <template #component class="w-50 h-50">
+        <CustomBalloon v-model="name" class="w-50 h-50"/>
+      </template>
+    </YandexMarker>
+      <div v-for="point in points" :key="point.id" @click="flyTo(point)" v-if="activeView === 'all' || activeView === 'offices'">
+        <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address" :options="{ preset: 'islands#greenIcon'}" >
+          <template #component class="w-50 h-50">
+            <CustomBalloon v-model="name" class="w-50 h-50"/>
+          </template>
+        </YandexMarker>
       </div>
       <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)" v-if="activeView === 'all' || activeView === 'atms'">
-        <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address" :options="{ preset: 'islands#redIcon'}" />
+        <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address" :options="{ preset: 'islands#redIcon'}">
+          <template #component class="w-50 h-50">
+            <CustomBalloon v-model="name" class="w-50 h-50"/>
+          </template>
+        </YandexMarker>
       </div>
     </YandexClusterer>
 
@@ -98,10 +110,12 @@ import axios from 'axios';
 
 export default {
   name: "offices",
+
   components: {
     YandexMap: yandexMap,
     YandexMarker: yandexMarker,
-    YandexClusterer: yandexClusterer
+    YandexClusterer: yandexClusterer,
+    CustomBalloon
   },
   data() {
     return {
@@ -111,7 +125,9 @@ export default {
       points: null,
       atms: null,
       selectedType: 'all',
-      activeView: 'all',
+      activeView: 'all',  // Initially show all
+      name: 'Custom', // Добавим новое свойство name
+
       selectedTypes: [],
       searchQuery: '',
     };
@@ -162,18 +178,6 @@ export default {
           errorCallback("Геолокация не поддерживается этим браузером.");
         }
       }
-    },
-    performSearch() {
-      // const ip = '111.111.111.111';
-      // axios.post(`http://${ip}/search`, { query: this.searchQuery })
-      //     .then(response => {
-      //       console.log(response.data);
-      //       // Обработайте ответ сервера
-      //     })
-      //     .catch(error => {
-      //       console.error(error);
-      //       // Обработайте ошибки запроса
-      //     });
     }
   },
   computed: {
@@ -215,6 +219,23 @@ export default {
   left: 15px;
   height: 80vh;
   z-index: 1;
+}
+.yandex-balloon {
+  height: 400px;
+  width: 400px;
+  overflow-y: auto;  /* Allow vertical scrolling if content exceeds */
+
+}
+.custom-balloon-content {
+  width: 400px;      /* Adjust width as per requirement */
+  height: 400px;     /* Adjust height as per requirement */
+  overflow-y: auto;  /* Allow vertical scrolling if content exceeds */
+}
+
+.ymaps-2-1-79-balloon__layout {
+  min-width: 100px;
+  height: 140%;
+  min-height: 50px;
 }
 
 .button-active {

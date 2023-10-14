@@ -118,7 +118,7 @@
               @click="openYandexMapsRoute(selectedPoint)"
               class="bg-blue-500 text-white px-4 py-2 rounded-full mb-2"
           >
-            Проложить маршрут ({{ routeDistance }} км)
+            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
           </button>
         </div>
 
@@ -130,10 +130,10 @@
             <p class="mb-1">{{ point.address }}</p>
             <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
             <button
-                @click.stop="openYandexMapsRoute(point)"
-                class="bg-blue-500 text-white px-4 py-2 rounded-full"
+                @click="openYandexMapsRoute(point)"
+                class="bg-blue-500 text-white px-4 py-2 rounded mb-2"
             >
-              Проложить маршрут
+              Проложить маршрут ({{ getRouteDistance(point) }} км)
             </button>
           </div>
 
@@ -146,7 +146,7 @@
                 @click.stop="openYandexMapsRoute(atm)"
                 class="bg-blue-500 text-white px-4 py-2 rounded"
             >
-              Проложить маршрут
+              Проложить маршрут ({{ getRouteDistance(atm) }} км)
             </button>
           </div>
         </div>
@@ -195,6 +195,23 @@ import officesData from '../../data/offices.json';
 import atmData from '../../data/atms.json';
 import axios from 'axios';
 
+function toRad(value) {
+  return value * Math.PI / 180;
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // радиус Земли в километрах
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
+  return d;
+}
+
 export default {
   name: "offices",
 
@@ -239,6 +256,13 @@ export default {
         case 'UNAVAILABLE': return 'Недоступно';
         default: return 'Неизвестно';
       }
+    },
+    getRouteDistance(point) {
+      const { latitude, longitude } = point;
+      const myLat = Reflect.get(this.myCoordinates, 0);
+      const myLong = Reflect.get(this.myCoordinates, 1);
+      const distance = calculateDistance(latitude, longitude, myLat, myLong);
+      return parseFloat(distance.toFixed(1));
     },
     openYandexMapsRoute(point) {
       event.stopPropagation();
@@ -327,6 +351,9 @@ export default {
       if (!this.atms) return [];
       return this.atms;
     }
+  },
+  routeDistance() {
+    return this.filteredPoints.map(point => this.getRouteDistance(point));
   }
 };
 </script>

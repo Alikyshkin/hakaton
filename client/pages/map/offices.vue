@@ -113,6 +113,13 @@
             <p>Сканер QR: {{ translateAvailability(selectedPoint.serviceActivity.qrRead) }}</p>
             <p>Адаптация для людей с ОВЗ: {{ translateAvailability(selectedPoint.serviceActivity.wheelchair) }}</p>
           </div>
+
+          <button
+              @click="openYandexMapsRoute(selectedPoint)"
+              class="bg-blue-500 text-white px-4 py-2 rounded mb-2"
+          >
+            Проложить маршрут ({{ routeDistance }} км)
+          </button>
         </div>
 
         <div v-else>
@@ -199,6 +206,7 @@ export default {
       selectedPoint: null,  // Добавлено новое свойство
       selectedTypes: [],
       searchQuery: '',
+      routeDistance: null,  // Добавьте это свойство для хранения расстояния
     };
   },
   mounted() {
@@ -253,8 +261,20 @@ export default {
             console.error('Ошибка при получении данных банкоматов:', error);
           });
     },
+    async calculateRouteDistance(point) {
+      const zeroKmCoords = [55.755826, 37.6173];  // Координаты нулевого километра в Москве
+      const pointCoords = [point.latitude, point.longitude];
+      try {
+        const response = await axios.get(`https://api.routing.yandex.net/v1.0/distances?waypoints=${zeroKmCoords.join()},${pointCoords.join()}&mode=car&apikey=ВАШ_АПИ_КЛЮЧ`);
+        const distance = response.data.features[0].properties.distances.distance;
+        this.routeDistance = (distance / 1000).toFixed(2);  // Конвертируем метры в километры и округляем до 2 знаков после запятой
+      } catch (error) {
+        console.error('Ошибка при расчете расстояния:', error);
+      }
+    },
     selectPoint(point) {
       this.selectedPoint = point;
+      this.calculateRouteDistance(point);  // Вызовите этот метод при выборе точки
     },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];

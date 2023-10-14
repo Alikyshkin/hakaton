@@ -116,7 +116,7 @@
 
           <button
               @click="openYandexMapsRoute(selectedPoint)"
-              class="bg-blue-500 text-white px-4 py-2 rounded mb-2"
+              class="bg-blue-500 text-white px-4 py-2 rounded-full mb-2"
           >
             Проложить маршрут ({{ routeDistance }} км)
           </button>
@@ -129,7 +129,12 @@
             <h5 class="text-md font-bold mb-2">{{ point.salePointName }}</h5>
             <p class="mb-1">{{ point.address }}</p>
             <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
-            <button @click.stop="openYandexMapsRoute([point.latitude, point.longitude])" class="bg-blue-500 text-white px-4 py-2 rounded">Проложить маршрут</button>
+            <button
+                @click.stop="openYandexMapsRoute(point)"
+                class="bg-blue-500 text-white px-4 py-2 rounded-full"
+            >
+              Проложить маршрут
+            </button>
           </div>
 
           <!-- ATMs -->
@@ -137,6 +142,12 @@
                @click="selectPoint(atm)" class="hover:cursor-pointer hover:bg-gray-100">
             <h5 class="text-md font-bold mb-2">{{ atm.address }}</h5>
             <p class="mb-1">Круглосуточно: {{ atm.allDay ? 'Да' : 'Нет' }}</p>
+            <button
+                @click.stop="openYandexMapsRoute(atm)"
+                class="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Проложить маршрут
+            </button>
           </div>
         </div>
       </div>
@@ -230,11 +241,10 @@ export default {
       }
     },
     openYandexMapsRoute(point) {
+      event.stopPropagation();
       const { latitude, longitude } = point;
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
-      console.log(myLat);
-      console.log(myLong);
 
       const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=6.79`;
       window.open(yandexMapsUrl, '_blank');

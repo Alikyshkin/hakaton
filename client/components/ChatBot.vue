@@ -6,7 +6,7 @@
     <div v-if="chatOpen" class="chat-area overflow-y-auto px-4 py-6 flex flex-col gap-3">
       <!-- Add your chat messages here -->
     </div>
-    <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4">
+    <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4 chatbot-textfield">
       <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" name="message" type="text" placeholder="Type your message ..." />
       <button class="input-send focus:outline-none" @click="send">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-blue-600"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>
@@ -110,5 +110,11 @@ export default {
 
 .pulse {
   animation: pulse 2s infinite;
+}
+
+.chatbot-textfield {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 </style>

@@ -16,7 +16,7 @@
         </svg>
       </button>
       <div v-bind:class="{ hidden: !isMenuOpen, 'block md:flex': isMenuOpen }" class="w-full md:block md:w-auto" id="navbar-default">
-        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
+        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white mobile-menu">
           <li>
             <a href="https://online.vtb.ru/" target="_blank" class="block py-2 pl-3 pr-4 rounded md:bg-transparent text-gray-900 md:p-0" aria-current="page">ВТБ ОНЛАЙН</a>
           </li>
@@ -70,5 +70,7 @@ export default {
 </script>
 
 <style scoped>
-
+.mobile-menu {
+  z-index: 2;
+}
 </style>

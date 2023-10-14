@@ -8,7 +8,7 @@
       <!--        <p>Рейтинг: {{ point.rating }}</p>-->
       <!--      </div>-->
       <!--    </div>-->
-      <Sidebar :offices="points" :flyTo="flyTo" />
+      <Sidebar :offices="points" :bankomats="atm" :flyTo="flyTo" />
     </div>
   </div>
   <YandexMap

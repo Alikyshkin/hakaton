@@ -3,7 +3,7 @@
     <span class="text-gray-900 cursor-pointer" @click="togglePopup">
       {{ city }}
     </span>
-    <div v-if="showPopup" class="absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4">
+    <div v-if="showPopup" class="absolute left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 popup-city">
       <p v-if="!changingCity" class="mb-1">Ваш город {{ city }}?</p>
       <div v-if="!changingCity" class="flex space-x-4">
         <button @click="confirmCity" class="flex-1 py-2 px-4 border border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
@@ -68,5 +68,7 @@ export default {
 </script>
 
 <style scoped>
-/* Ваши стили */
+.popup-city {
+  z-index: 3;
+}
 </style>

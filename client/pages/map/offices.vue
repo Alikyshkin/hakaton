@@ -3,7 +3,7 @@
     <div class="position-absolute ">
       <div class="bg-white h-1/2 w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
         <!-- Иконка крестика -->
-        <div v-if="selectedPoint" class="absolute top-2 right-2 cursor-pointer" @click="selectedPoint = null">
+        <div v-if="selectedPoint" class="absolute top-2 right-2 cursor-pointer" @click="resetSelectedPoint">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 90 90" fill="none">
             <path
                 d="M50.475 45L71.25 65.775V71.25H65.775L45 50.475L24.225 71.25H18.75V65.775L39.525 45L18.75 24.225V18.75H24.225L45 39.525L65.775 18.75H71.25V24.225L50.475 45Z"
@@ -172,6 +172,12 @@
           </template>
         </YandexMarker>
       </div>
+      <YandexMarker v-if="activeView === 'offices-one' && CurrentChoice.salePointName" :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address" :options="{ preset: 'islands#greenIcon'}">
+        <template #component class="w-50 h-50">
+          <CustomBalloon v-model="name" class="w-50 h-50"/>
+        </template>
+      </YandexMarker>
+
       <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)"
            v-if="activeView === 'all' || activeView === 'atms'">
         <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address"
@@ -181,6 +187,12 @@
           </template>
         </YandexMarker>
       </div>
+      <YandexMarker v-if="activeView === 'atms-one' && !CurrentChoice.salePointName" :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address" :options="{ preset: 'islands#redIcon'}">
+        <template #component class="w-50 h-50">
+          <CustomBalloon v-model="name" class="w-50 h-50"/>
+        </template>
+      </YandexMarker>
+
     </YandexClusterer>
 
   </YandexMap>
@@ -234,6 +246,7 @@ export default {
       selectedTypes: [],
       searchQuery: '',
       routeDistance: null,  // Добавьте это свойство для хранения расстояния
+      CurrentChoice: null,
     };
   },
   mounted() {
@@ -255,6 +268,10 @@ export default {
         case 'UNAVAILABLE': return 'Недоступно';
         default: return 'Неизвестно';
       }
+    },
+    resetSelectedPoint() {
+      this.selectedPoint = null;
+      this.CurrentChoice = null;
     },
     getRouteDistance(point) {
       const { latitude, longitude } = point;
@@ -307,6 +324,12 @@ export default {
     },
     selectPoint(point) {
       this.selectedPoint = point;
+      this.CurrentChoice = point; // setting the point or atm to CurrentChoice
+      if (point.salePointName) { // Assuming that the property `salePointName` is unique to offices
+        this.setActiveView('offices-one');
+      } else {
+        this.setActiveView('atms-one');
+      }
       this.calculateRouteDistance(point);  // Вызовите этот метод при выборе точки
     },
     getCoordinates() {

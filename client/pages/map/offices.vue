@@ -37,8 +37,14 @@
         </div>
 
         <div class="mb-4">
-          <input type="text" v-model="searchQuery" placeholder="Поиск по отделениям" class="w-full p-2 mb-2 border rounded"/>
-          <!-- ... остальные кнопки и чекбоксы ... -->
+          <form @submit.prevent="performSearch" class="flex">
+            <input type="text" v-model="searchQuery" placeholder="Поиск по отделениям" class="w-full p-2 border rounded-l"/>
+            <button type="submit" class="px-4 py-2 border rounded-r flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 50 50">
+                <path d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"></path>
+              </svg>
+            </button>
+          </form>
         </div>
 
         <!-- Offices -->
@@ -85,9 +91,10 @@
 <script>
 import { ref } from 'vue';
 import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
-import CustomBalloon from '../../components/CustomBalloon.vue';  // Assuming Sidebar is in the same folder
-import officesData from '../../data/offices.json';  // Adjust path accordingly
-import atmData from '../../data/atms.json';  // Adjust path accordingly
+import CustomBalloon from '../../components/CustomBalloon.vue';
+import officesData from '../../data/offices.json';
+import atmData from '../../data/atms.json';
+import axios from 'axios';
 
 export default {
   name: "offices",
@@ -104,7 +111,7 @@ export default {
       points: null,
       atms: null,
       selectedType: 'all',
-      activeView: 'all',  // Initially show all
+      activeView: 'all',
       selectedTypes: [],
       searchQuery: '',
     };
@@ -117,7 +124,7 @@ export default {
   methods: {
     setActiveView(view) {
       this.activeView = view;
-      this.$emit('update:modelValue', view);  // Emit the update event
+      this.$emit('update:modelValue', view);
     },
     fetchOffices() {
       this.points = officesData;
@@ -155,16 +162,28 @@ export default {
           errorCallback("Геолокация не поддерживается этим браузером.");
         }
       }
+    },
+    performSearch() {
+      // const ip = '111.111.111.111';
+      // axios.post(`http://${ip}/search`, { query: this.searchQuery })
+      //     .then(response => {
+      //       console.log(response.data);
+      //       // Обработайте ответ сервера
+      //     })
+      //     .catch(error => {
+      //       console.error(error);
+      //       // Обработайте ошибки запроса
+      //     });
     }
   },
   computed: {
     filteredPoints() {
       if (!this.points) return [];
-      return this.points
+      return this.points;
     },
     filteredAtms() {
       if (!this.atms) return [];
-      return this.atms
+      return this.atms;
     }
   }
 };

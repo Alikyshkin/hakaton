@@ -8,21 +8,50 @@
       <!--        <p>Рейтинг: {{ point.rating }}</p>-->
       <!--      </div>-->
       <!--    </div>-->
-      <Sidebar :offices="points" :bankomats="atm" :flyTo="flyTo" />
+      <div class="bg-white h-1/2 w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
+        <!-- Buttons to toggle view -->
+        <div class="mb-4">
+          <button @click="setActiveView('all')" class="mr-2 px-4 py-2 border rounded ">Все</button>
+          <button @click="setActiveView('offices')" class="mr-2 px-4 py-2 border rounded">Офисы</button>
+          <button @click="setActiveView('atms')" class="px-4 py-2 border rounded">Банкоматы</button>
+        </div>
+
+        <!-- Offices -->
+        <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in points" :key="point.salePointName" @click="flyTo(point)" class="hover:cursor-pointer hover:bg-gray-100">
+          <h3 class="text-xl font-bold mb-2">{{ point.salePointName }}</h3>
+          <p class="mb-1">{{ point.address }}</p>
+          <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
+        </div>
+
+        <!-- ATMs -->
+        <div v-if="activeView === 'all' || activeView === 'atms'" v-for="atm in atms" :key="atm.address" @click="flyTo(atm)" class="hover:cursor-pointer hover:bg-gray-100">
+          <h3 class="text-xl font-bold mb-2">{{ atm.address }}</h3>
+          <p class="mb-1">Круглосуточно: {{ atm.allDay ? 'Да' : 'Нет' }}</p>
+          <p class="mb-1">Поддержка для инвалидов: {{ atm.services.wheelchair.serviceCapability }}</p>
+          <p class="mb-1">Поддержка для слепых: {{ atm.services.blind.serviceCapability }}</p>
+          <p class="mb-1">NFC для банковских карт: {{ atm.services.nfcForBankCards.serviceCapability }}</p>
+          <p class="mb-1">Чтение QR: {{ atm.services.qrRead.serviceCapability }}</p>
+          <p class="mb-1">Поддержка USD: {{ atm.services.supportsUsd.serviceCapability }}</p>
+          <p class="mb-1">Поддержка пополнения RUB: {{ atm.services.supportsChargeRub.serviceCapability }}</p>
+          <p class="mb-1">Поддержка EUR: {{ atm.services.supportsEur.serviceCapability }}</p>
+          <p class="mb-1">Поддержка RUB: {{ atm.services.supportsRub.serviceCapability }}</p>
+        </div>
+      </div>
     </div>
   </div>
   <YandexMap
       :coordinates="[55.755573, 37.617296]"
       :zoom="zoom"
+
   >
     <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
     <YandexMarker :coordinates="myCoordinates" :marker-id="123"  />
-    <div v-for="point in points" :key="point.id" @click="flyTo(point)">
-      <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" :options="{  preset: 'islands#greenIcon'}" />
-    </div>
-    <div v-for="a in atm" :key="a.id" @click="flyTo(a)">
-      <YandexMarker :coordinates="[a.latitude, a.longitude]" :marker-id="a.id" :options="{  preset: 'islands#redIcon'}" />
-    </div>
+      <div v-for="point in points" :key="point.id" @click="flyTo(point)" v-if="activeView === 'all' || activeView === 'offices'">
+        <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.id" :options="{ preset: 'islands#greenIcon'}" />
+      </div>
+      <div v-for="atm in atms" :key="atm.id" @click="flyTo(atm)" v-if="activeView === 'all' || activeView === 'atms'">
+        <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.id" :options="{ preset: 'islands#redIcon'}" />
+      </div>
     </YandexClusterer>
 
   </YandexMap>
@@ -31,7 +60,7 @@
 <script>
 import { ref } from 'vue';
 import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
-import Sidebar from '../../components/Sidebar.vue';  // Assuming Sidebar is in the same folder
+import CustomBalloon from '../../components/CustomBalloon.vue';  // Assuming Sidebar is in the same folder
 import officesData from '../../data/offices.json';  // Adjust path accordingly
 import atmData from '../../data/atms.json';  // Adjust path accordingly
 
@@ -50,7 +79,10 @@ export default {
       myCoordinates: null,
       zoom: 10,
       points: null,
-      atm: null
+      atms: null,
+      selectedType: 'all',
+      activeView: 'all',  // Initially show all
+
     };
   },
   mounted() {
@@ -59,13 +91,17 @@ export default {
     this.fetchUserLocation();
   },
   methods: {
+    setActiveView(view) {
+      this.activeView = view;
+      this.$emit('update:modelValue', view);  // Emit the update event
+    },
     fetchOffices() {
       this.points = officesData;
       console.log(this.points[0])
     },
     fetchATM() {
-      this.atm = atmData.atms;
-      console.log(this.atm[0])
+      this.atms = atmData.atms;
+      console.log(this.atms[0])
     },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];
@@ -121,5 +157,12 @@ export default {
   margin-top: 15px;
   margin-left: 30px;
   margin-bottom: 15px;
+}
+.sidebar-map {
+  position: absolute;
+  top: 90px;
+  left: 15px;
+  height: 80vh;
+  z-index: 1;
 }
 </style>

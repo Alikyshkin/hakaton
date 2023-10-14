@@ -1,11 +1,12 @@
 <template>
-  <div>
-    {{ modelValue }} component with props and emits
-    <button @click="updateValue">Click!</button>
+  <div class="w-50 h-50">
+<!--    {{ modelValue }}-->
+    <button @click="updateValue">Сюда!</button>
   </div>
 </template>
 
 <script>
+
 export default {
   name: "CustomBalloon",
   props: {
@@ -22,6 +23,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.custom-balloon-content {
+  width: 400px;      /* Adjust width as per requirement */
+  height: 400px;     /* Adjust height as per requirement */
+  overflow-y: auto;  /* Allow vertical scrolling if content exceeds */
+}
 </style>

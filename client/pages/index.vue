@@ -1,6 +1,5 @@
 <template>
   <div>
-    <ChatBot></ChatBot>
     <div class="bg-gray-50 p-10 rounded-md shadow-md">
       <div class="container items-center mx-auto">
         <h1 class="text-xl font-semibold mb-2">Отделения и банкоматы</h1>
@@ -25,11 +24,9 @@
 </template>
 
 <script>
-import ChatBot from '../components/ChatBot.vue';
 
 export default {
   name: "index.vue",
-  components: {ChatBot},
 }
 </script>
 

@@ -32,7 +32,14 @@ export default {
   data() {
     return {
       coordinates: null,
-      zoom: 15
+      zoom: 15,
+      points: [
+        {
+          title: "1",
+          address: "Пулковская улица 8к3",
+          rating: 5
+        }
+      ]
     };
   },
   mounted() {

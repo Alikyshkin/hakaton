@@ -21,7 +21,7 @@
             <a href="https://online.vtb.ru/" target="_blank" class="block py-2 pl-3 pr-4 rounded md:bg-transparent text-gray-900 md:p-0" aria-current="page">ВТБ ОНЛАЙН</a>
           </li>
           <li>
-            <nuxt-link to="/map/offices" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Карта</nuxt-link>
+            <nuxt-link to="/offices" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Карта</nuxt-link>
           </li>
           <li v-if="!isAuthenticated">
             <nuxt-link to="/authorization" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Войти</nuxt-link>

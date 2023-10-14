@@ -11,7 +11,7 @@
 
           <!-- Add your pins here if necessary -->
 
-          <nuxt-link to="/map/offices">
+          <nuxt-link to="/offices">
             <button
                 class="bg-blue-600 text-white p-2 sm:w-full md:w-full lg:w-full lg:px-72 rounded-md hover:bg-blue-700">
               Смотреть на карте

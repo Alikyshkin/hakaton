@@ -154,9 +154,8 @@
     </div>
   </div>
   <YandexMap
-      :coordinates="[55.755573, 37.617296]"
+      :coordinates="myCoordinates"
       :zoom="zoom"
-
   >
     <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
       <YandexMarker :coordinates="myCoordinates" :marker-id="12345">
@@ -224,8 +223,8 @@ export default {
   data() {
     return {
       coordinates: null,
-      myCoordinates: null,
-      zoom: 10,
+      myCoordinates: [55.747072, 37.536403],
+      zoom: 14,
       points: null,
       atms: null,
       selectedType: 'all',
@@ -240,7 +239,7 @@ export default {
   mounted() {
     this.fetchOffices();
     this.fetchATM();
-    this.fetchUserLocation();
+    // this.fetchUserLocation();
   },
   methods: {
     translateSupport(value) {
@@ -345,11 +344,15 @@ export default {
   computed: {
     filteredPoints() {
       if (!this.points) return [];
-      return this.points;
+      return this.points.sort((a, b) => {
+            return this.getRouteDistance(a) - this.getRouteDistance(b);
+      });
     },
     filteredAtms() {
       if (!this.atms) return [];
-      return this.atms;
+      return this.atms.sort((a, b) => {
+        return this.getRouteDistance(a) - this.getRouteDistance(b);
+      });
     }
   },
   routeDistance() {

@@ -1,6 +1,6 @@
 <template>
-  <div class="container mx-auto p-4">
-    <div class="bg p-10 rounded-md shadow-md">
+  <div class="bg p-10 rounded-md shadow-md">
+    <div class="container mx-auto pt-4s">
       <div class="grid grid-cols-3 gap-4">
         <!-- Левая колонка -->
         <div class="space-y-4">

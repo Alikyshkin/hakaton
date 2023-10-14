@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-white border-gray-200">
-    <div class="container flex flex-wrap items-center justify-between mx-auto p-4">
+    <div class="container flex flex-wrap items-center justify-between mx-auto pb-4 pt-4">
       <div class="flex items-center">
         <nuxt-link to="/" class="flex items-center">
           <img src="../public/Logo/VTB_logo_ru.png" class="h-12 mr-3" alt="VTB Logo" />

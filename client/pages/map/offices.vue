@@ -247,6 +247,7 @@ export default {
       searchQuery: '',
       routeDistance: null,  // Добавьте это свойство для хранения расстояния
       CurrentChoice: null,
+      PreviousView: null,
     };
   },
   mounted() {
@@ -272,6 +273,8 @@ export default {
     resetSelectedPoint() {
       this.selectedPoint = null;
       this.CurrentChoice = null;
+      this.setActiveView(this.PreviousView);
+      // this.setActiveView('all');
     },
     getRouteDistance(point) {
       const { latitude, longitude } = point;
@@ -290,6 +293,7 @@ export default {
       window.open(yandexMapsUrl, '_blank');
     },
     setActiveView(view) {
+      this.PreviousView = this.activeView;
       this.activeView = view;
       this.$emit('update:modelValue', view);
     },

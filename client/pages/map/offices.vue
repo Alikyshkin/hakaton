@@ -48,10 +48,11 @@
         </div>
 
         <!-- Offices -->
-        <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.salePointName" @click="flyTo(point)" class="hover:cursor-pointer hover:bg-gray-100">
+        <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.salePointName" @click="flyTo(point)" class="hover:cursor-pointer hover:bg-gray-100 pb-4 ">
           <h3 class="text-xl font-bold mb-2">{{ point.salePointName }}</h3>
           <p class="mb-1">{{ point.address }}</p>
           <p class="mb-4">Тип офиса: {{ point.officeType }}</p>
+          <button @click.stop="openYandexMapsRoute([point.latitude, point.longitude])" class="bg-blue-500 text-white px-4 py-2 rounded">Проложить маршрут</button>
         </div>
 
         <!-- ATMs -->
@@ -98,6 +99,20 @@
     </YandexClusterer>
 
   </YandexMap>
+  <div style="height:100vh; width:100vw">
+    <LMap
+        ref="map"
+        :zoom="zoom"
+        :center="[47.21322, -1.559482]"
+    >
+      <LTileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
+          layer-type="base"
+          name="OpenStreetMap"
+      />
+    </LMap>
+  </div>
 </template>
 
 <script>
@@ -106,7 +121,7 @@ import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
 import CustomBalloon from '../../components/CustomBalloon.vue';
 import officesData from '../../data/offices.json';
 import atmData from '../../data/atms.json';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
   name: "offices",
@@ -138,6 +153,16 @@ export default {
     this.fetchUserLocation();
   },
   methods: {
+    openYandexMapsRoute(point) {
+      const { latitude, longitude } = point;
+      const myLat = Reflect.get(this.myCoordinates, 0);
+      const myLong = Reflect.get(this.myCoordinates, 1);
+      console.log(myLat);
+      console.log(myLong);
+
+      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=6.79`;
+      window.open(yandexMapsUrl, '_blank');
+    },
     setActiveView(view) {
       this.activeView = view;
       this.$emit('update:modelValue', view);

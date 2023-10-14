@@ -76,6 +76,18 @@ export default {
   position: fixed;
   bottom: 15px;
   left: 15px;
+  transition: all 0.5s ease-in-out;
+
+}
+/* Rotation for the chat toggle button */
+.chatbot-toggle {
+  /* Add transition for smooth rotation */
+transition: transform 0.3s ease-in-out;
+}
+
+/* Rotate the button when chat is open */
+.chatbot-toggle svg[v-if="chatOpen"] {
+  transform: rotate(180deg);
 }
 
 @media (min-width: 450px) {
@@ -117,4 +129,5 @@ export default {
   bottom: 0;
   width: 100%;
 }
+
 </style>

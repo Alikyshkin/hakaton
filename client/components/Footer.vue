@@ -1,7 +1,7 @@
 <template>
   <div class="bg p-10 rounded-md shadow-md">
     <div class="container mx-auto pt-4s">
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid sm:grid-rows-3 sm:grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Левая колонка -->
         <div class="space-y-4">
           <div class="text-xl">1000

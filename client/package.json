@@ -18,7 +18,9 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
+    "nuxt-start": "^2.17.1",
     "nuxt3": "^3.8.0-28284309.b3d3d7f4",
-    "pinia": "^2.1.6"
+    "pinia": "^2.1.6",
+    "vue-yandex-maps": "^1.1.0"
   }
 }

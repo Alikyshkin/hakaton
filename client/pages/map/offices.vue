@@ -7,59 +7,77 @@
         <p>Рейтинг: {{ point.rating }}</p>
       </div>
     </div>
-    <div id="map" class="yandex-map"></div>
+
   </div>
+  <YandexMap
+      :coordinates="coordinates"
+      :zoom="zoom"
+  >
+    <YandexMarker :coordinates="coordinates" :marker-id="123" />
+  </YandexMap>
 </template>
 
 <script>
+import { ref } from 'vue';
+import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
+
 export default {
   name: "offices",
+
+  components: {
+    YandexMap: yandexMap,
+    YandexMarker: yandexMarker,
+    YandexClusterer: yandexClusterer
+  },
   data() {
     return {
-      map: null,
-      points: [
-        { id: 1, title: "Пункт 1", address: "Пулковская улица 8к3", rating: Math.random() * 5, lat: 59.938951, lng: 30.315635 },
-        // ...добавьте другие пункты аналогичным образом
-      ],
+      coordinates: null,
+      zoom: 15
     };
   },
   mounted() {
-    // Ensure the Yandex Maps API script is loaded
-    if (!window.ymaps) {
-      const script = document.createElement('script');
-      script.src = 'https://api-maps.yandex.ru/2.1/?apikey=84065b55-5fa3-430c-a4ed-69fb73051b7b&lang=ru_RU';
-      script.async = true;
-      script.onload = this.initMap;
-      document.head.appendChild(script);
-    } else {
-      this.initMap();
-    }
+    this.fetchUserLocation();
   },
   methods: {
-    initMap() {
-      window.ymaps.ready(() => {
-        this.map = new window.ymaps.Map('map', {
-          center: [59.938951, 30.315635],
-          zoom: 10,
-        });
-
-        this.points.forEach(point => {
-          const marker = new window.ymaps.Placemark([point.lat, point.lng], {
-            hintContent: point.title,
-            balloonContent: point.address,
-          });
-          this.map.geoObjects.add(marker);
-        });
-      });
+    getCoordinates() {
+      return [55 + Math.random(), 33 + Math.random()];
     },
-    flyTo(point) {
-      this.map.setCenter([point.lat, point.lng], 15, { duration: 500 });
+    fetchUserLocation() {
+      this.getUserLocation(
+          (latitude, longitude) => {
+            this.coordinates = [latitude, longitude];
+          },
+          errorMessage => {
+            console.error(errorMessage);
+          }
+      );
     },
-  },
+    getUserLocation(successCallback, errorCallback) {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+              successCallback(position.coords.latitude, position.coords.longitude);
+            },
+            error => {
+              if (errorCallback) {
+                errorCallback(error.message);
+              }
+            }
+        );
+      } else {
+        if (errorCallback) {
+          errorCallback("Геолокация не поддерживается этим браузером.");
+        }
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
+.yandex-container {
+  height: 800px;
+}
 .map-container {
   display: flex;
 }
@@ -72,12 +90,7 @@ export default {
   overflow-y: auto;
   z-index: 1;
   margin-top: 15px;
-  margin-left: 15px;
+  margin-left: 30px;
   margin-bottom: 15px;
-}
-
-.yandex-map {
-  width: 100%;
-  height: 100vh;
 }
 </style>

@@ -1,13 +1,15 @@
 <template>
-  <div class="map-container">
-    <div class="sidebar">
-      <div v-for="point in points" :key="point.id" @click="flyTo(point)">
-        <h3>{{ point.title }}</h3>
-        <p>{{ point.address }}</p>
-        <p>Рейтинг: {{ point.rating }}</p>
-      </div>
+  <div class="map-container ">
+    <div class="position-absolute ">
+<!--    <div class="sidebar">-->
+<!--      <div v-for="point in points" :key="point.id" @click="flyTo(point)">-->
+<!--        <h3>{{ point.title }}</h3>-->
+<!--        <p>{{ point.address }}</p>-->
+<!--        <p>Рейтинг: {{ point.rating }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+    <Sidebar :offices="points" :flyTo="flyTo" />
     </div>
-
   </div>
   <YandexMap
       :coordinates="coordinates"
@@ -20,6 +22,8 @@
 <script>
 import { ref } from 'vue';
 import { yandexMap, yandexMarker, yandexClusterer } from 'vue-yandex-maps';
+import Sidebar from '../../components/Sidebar.vue';  // Assuming Sidebar is in the same folder
+import officesData from '../../data/offices.json';  // Adjust path accordingly
 
 export default {
   name: "offices",
@@ -27,7 +31,8 @@ export default {
   components: {
     YandexMap: yandexMap,
     YandexMarker: yandexMarker,
-    YandexClusterer: yandexClusterer
+    YandexClusterer: yandexClusterer,
+    Sidebar
   },
   data() {
     return {
@@ -43,9 +48,13 @@ export default {
     };
   },
   mounted() {
+    this.fetchOffices();
     this.fetchUserLocation();
   },
   methods: {
+    fetchOffices() {
+      this.points = officesData;
+    },
     getCoordinates() {
       return [55 + Math.random(), 33 + Math.random()];
     },

@@ -1,50 +1,54 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from 'typeorm';
 import {OpenHour} from "./open-hour.entity";
+import {Ticket} from "./ticket.entity";
 
 @Entity()
 export class SalePoint {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({type: 'varchar', length: 255})
     salePointName: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({type: 'varchar', length: 255})
     address: string;
 
-    @Column({ type: 'varchar', length: 32 })
+    @Column({type: 'varchar', length: 32})
     status: string;
 
-    @OneToMany(() => OpenHour, openHour => openHour.salePointForOpenHours, { cascade: true, eager: true })
+    @OneToMany(() => OpenHour, openHour => openHour.salePointForOpenHours, {cascade: true, eager: true})
     openHours: OpenHour[];
 
-    @Column({ type: 'boolean', default: false })
+    @Column({type: 'boolean', default: false})
     rko: boolean;
 
-    @OneToMany(() => OpenHour, openHour => openHour.salePointForOpenHoursIndividual, { cascade: true, eager: true })
+    @OneToMany(() => OpenHour, openHour => openHour.salePointForOpenHoursIndividual, {cascade: true, eager: true})
     openHoursIndividual: OpenHour[];
 
-    @Column({ type: 'varchar', length: 128 })
+    @OneToMany(() => Ticket, ticket => ticket.salePoint, {cascade: true, eager: true})
+    ticket: Ticket;
+
+    @Column({type: 'varchar', length: 128})
     officeType: string;
 
-    @Column({ type: 'varchar', length: 128 })
+    @Column({type: 'varchar', length: 128})
     salePointFormat: string;
 
-    @Column({ type: 'boolean', default: false })
+    @Column({type: 'boolean', default: false})
     suoAvailability: boolean;
 
-    @Column({ type: 'boolean', default: false })
+    @Column({type: 'boolean', default: false})
     hasRamp: boolean;
 
-    @Column({ type: 'double precision' })
+    @Column({type: 'double precision'})
     latitude: number;
 
-    @Column({ type: 'double precision' })
+    @Column({type: 'double precision'})
     longitude: number;
 
-    @Column({ type: 'varchar', length: 128, nullable: true })
+    @Column({type: 'varchar', length: 128, nullable: true})
     metroStation: string;
 
-    @Column({ type: 'boolean', default: false, nullable: true })
+    @Column({type: 'boolean', default: false, nullable: true})
     kep: boolean;
 }

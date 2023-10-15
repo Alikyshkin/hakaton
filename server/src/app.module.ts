@@ -12,6 +12,7 @@ import {SalePointModule} from './sale-point/sale-point.module';
 import {AtmModule} from './atm/atm.module';
 import {Ticket} from "./entities/ticket.entity";
 import { TicketModule } from './ticket/ticket.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
     imports: [
@@ -33,7 +34,8 @@ import { TicketModule } from './ticket/ticket.module';
         SalePointModule,
         AtmModule,
         TypeOrmModule.forFeature([OpenHour]),
-        TicketModule
+        TicketModule,
+        SearchModule
     ],
     controllers: [AppController],
     providers: [AppService],

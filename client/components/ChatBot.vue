@@ -14,7 +14,7 @@
       </div>
 
       <div v-if="chatOpen" class="questions-textfield popular-questions flex-grow px-4 py-2 focus:outline-none flex flex-row">
-        <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 lg:px-72 rounded-md hover:bg-gray-400">
+        <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 rounded-md hover:bg-gray-400">
           {{ question }}
         </button>
       </div>
@@ -140,7 +140,7 @@ transition: transform 0.3s ease-in-out;
 .questions-textfield {
   position: absolute;
   bottom: 60px;
-  width: 90%;
+  /*width: 90%;*/
 }
 
 </style>

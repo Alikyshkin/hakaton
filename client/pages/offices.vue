@@ -65,7 +65,13 @@
 
         <!-- Детальный просмотр -->
         <div v-if="selectedPoint" class="detail-view">
-          <h2 class="font-bold mb-2">{{ selectedPoint.salePointName || selectedPoint.address }}</h2>
+          <h2 class="font-bold mb-2 mt-4 mr-2">{{ selectedPoint.salePointName || selectedPoint.address }}</h2>
+          <button
+              @click="openYandexMapsRoute(selectedPoint)"
+              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full"
+          >
+            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
+          </button>
 
           <!-- Details for office -->
           <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}
@@ -82,7 +88,7 @@
           <p v-if="typeof selectedPoint.hasRamp !== 'undefined'" class="mb-2"><span
               class="font-bold">Наличие рампы: </span>{{ selectedPoint.hasRamp ? 'Да' : 'Нет' }}</p>
           <p v-if="selectedPoint.metroStation" class="mb-2"><span
-              class="font-bold">Станция метро: </span>{{ selectedPoint.metroStation }}</p>
+              class="font-bold">Станция метро: <br></span>{{ selectedPoint.metroStation }}</p>
           <p v-if="typeof selectedPoint.kep !== 'undefined'" class="mb-2"><span
               class="font-bold">КЕП: </span>{{ selectedPoint.kep ? 'Да' : 'Нет' }}</p>
           <div v-if="selectedPoint.openHours" class="mb-2">
@@ -123,13 +129,6 @@
             <p>Сканер QR: {{ translateAvailability(selectedPoint.serviceActivity.qrRead) }}</p>
             <p>Адаптация для людей с ОВЗ: {{ translateAvailability(selectedPoint.serviceActivity.wheelchair) }}</p>
           </div>
-
-          <button
-              @click="openYandexMapsRoute(selectedPoint)"
-              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full"
-          >
-            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
-          </button>
         </div>
 
         <div v-else>

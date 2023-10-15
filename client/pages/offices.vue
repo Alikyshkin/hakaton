@@ -1,7 +1,7 @@
 <template>
-  <div class="map-container ">
-    <div class="position-absolute ">
-      <div class="bg-white h-1/2 w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
+  <div class="flex position-relative">
+    <div class="position-absolute">
+      <div class="bg-white fixed w-full md:absolute md:w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
         <!-- Иконка крестика -->
         <div v-if="selectedPoint" class="absolute top-2 right-2 cursor-pointer" @click="resetSelectedPoint">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 90 90" fill="none">
@@ -138,7 +138,8 @@
                @click="selectPoint(point)"
                class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
             <div class="flex items-center">
-              <div class="bg-red-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
+              <!-- Обновленная строка ниже -->
+              <div :class="[circleColorClass(point), 'w-4 h-4 rounded-full mr-2 border-b border-gray-300']"></div>
               <p class="mb-1">{{ point.address }}</p>
             </div>
             <button
@@ -259,19 +260,20 @@ export default {
       points: null,
       atms: null,
       selectedType: 'all',
-      activeView: 'all',  // Initially show all
-      name: 'Custom', // Добавим новое свойство name
-      selectedPoint: null,  // Добавлено новое свойство
+      activeView: 'all',
+      name: 'Custom',
+      selectedPoint: null,
       selectedTypes: [],
       searchQuery: '',
-      routeDistance: null,  // Добавьте это свойство для хранения расстояния
+      routeDistance: null,
       CurrentChoice: null,
       PreviousView: null,
     };
   },
-  mounted() {
-    this.fetchOffices();
-    this.fetchATM();
+  async mounted() {
+    await Promise.all([this.fetchOffices(), this.fetchATM()]);
+    // this.fetchOffices();
+    // this.fetchATM();
     // this.fetchUserLocation();
   },
   methods: {
@@ -322,47 +324,42 @@ export default {
       this.activeView = view;
       this.$emit('update:modelValue', view);
     },
-    fetchOffices() {
-      axios.get('http://77.91.86.52:3000/sale-point')
-          .then(response => {
-            this.points = response.data;
-          })
-          .catch(error => {
-            console.error('Ошибка при получении данных офисов:', error);
-          });
+    async fetchOffices() {
+      try {
+        const response = await axios.get('http://77.91.86.52:3000/sale-point');
+        this.points = response.data;
+      } catch (error) {
+        console.error('Ошибка при получении данных офисов:', error);
+      }
     },
-    fetchATM() {
-      axios.get('http://77.91.86.52:3000/atms')
-          .then(response => {
-            this.atms = response.data;
-          })
-          .catch(error => {
-            console.error('Ошибка при получении данных банкоматов:', error);
-          });
+    async fetchATM() {
+      try {
+        const response = await axios.get('http://77.91.86.52:3000/atms');
+        this.atms = response.data;
+      } catch (error) {
+        console.error('Ошибка при получении данных банкоматов:', error);
+      }
     },
     async calculateRouteDistance(point) {
-      const zeroKmCoords = [55.755826, 37.6173];  // Координаты нулевого километра в Москве
+      const zeroKmCoords = [55.755826, 37.6173];
       const pointCoords = [point.latitude, point.longitude];
       try {
         const response = await axios.get(`https://api.routing.yandex.net/v1.0/distances?waypoints=${zeroKmCoords.join()},${pointCoords.join()}&mode=car&apikey=ВАШ_АПИ_КЛЮЧ`);
         const distance = response.data.features[0].properties.distances.distance;
-        this.routeDistance = (distance / 1000).toFixed(2);  // Конвертируем метры в километры и округляем до 2 знаков после запятой
+        this.routeDistance = (distance / 1000).toFixed(2);
       } catch (error) {
         console.error('Ошибка при расчете расстояния:', error);
       }
     },
     selectPoint(point) {
       this.selectedPoint = point;
-      this.CurrentChoice = point; // setting the point or atm to CurrentChoice
-      if (point.salePointName) { // Assuming that the property `salePointName` is unique to offices
+      this.CurrentChoice = point;
+      if (point.salePointName) {
         this.setActiveView('offices-one');
       } else {
         this.setActiveView('atms-one');
       }
-      this.calculateRouteDistance(point);  // Вызовите этот метод при выборе точки
-    },
-    getCoordinates() {
-      return [55 + Math.random(), 33 + Math.random()];
+      this.calculateRouteDistance(point);
     },
     fetchUserLocation() {
       this.getUserLocation(
@@ -391,7 +388,23 @@ export default {
           errorCallback("Геолокация не поддерживается этим браузером.");
         }
       }
-    }
+    },
+    circleColorClass(point) {
+      const ticketCount = point.ticket && Array.isArray(point.ticket) ? point.ticket.length : 0;
+      if (ticketCount <= 5) {
+        return 'bg-green-500';
+      } else if (ticketCount <= 10) {
+        return 'bg-yellow-500';
+      } else {
+        return 'bg-red-500';
+      }
+    },
+    ticketCount(point) {
+      if (point && point.ticket) {
+        return point.ticket.length;
+      }
+      return 0;
+    },
   },
   computed: {
     filteredPoints() {
@@ -405,11 +418,11 @@ export default {
       return this.atms.sort((a, b) => {
         return this.getRouteDistance(a) - this.getRouteDistance(b);
       });
+    },
+    routeDistance() {
+      return this.filteredPoints.map(point => this.getRouteDistance(point));
     }
   },
-  routeDistance() {
-    return this.filteredPoints.map(point => this.getRouteDistance(point));
-  }
 };
 </script>
 
@@ -418,27 +431,8 @@ export default {
   height: 800px;
 }
 
-.map-container {
-  display: flex;
-}
-
-
-.sidebar {
-  position: absolute;
-  width: 20%;
-  background-color: white;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 1;
-  margin-top: 15px;
-  margin-left: 30px;
-  margin-bottom: 15px;
-}
-
 .sidebar-map {
   position: absolute;
-  top: 90px;
-  left: 15px;
   height: 80vh;
   z-index: 1;
   border-radius: 7px;
@@ -447,14 +441,13 @@ export default {
 .yandex-balloon {
   height: 400px;
   width: 400px;
-  overflow-y: auto; /* Allow vertical scrolling if content exceeds */
-
+  overflow-y: auto;
 }
 
 .custom-balloon-content {
-  width: 400px; /* Adjust width as per requirement */
-  height: 400px; /* Adjust height as per requirement */
-  overflow-y: auto; /* Allow vertical scrolling if content exceeds */
+  width: 400px;
+  height: 400px;
+  overflow-y: auto;
 }
 
 .ymaps-2-1-79-balloon__layout {
@@ -463,12 +456,15 @@ export default {
   min-height: 50px;
 }
 
-.button-active {
-  background-color: #3490dc; /* blue */
-  color: white;
+.detail-view p {
+  margin-bottom: 8px;
 }
 
-.detail-view p {
-  margin-bottom: 8px; /* Расстояние между пунктами */
+@media (max-width: 768px) {
+  .sidebar-map {
+    height: 40%;
+    position: absolute;
+    bottom: 0;
+  }
 }
 </style>

@@ -72,6 +72,9 @@
           >
             Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
           </button>
+          <button @click="openModal" class="bg-gray-200 text-blue-600 px-2 py-2 rounded-full mb-2 w-full hover:bg-gray-300">
+            Запись онлайн
+          </button>
 
           <!-- Details for office -->
           <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}
@@ -182,16 +185,6 @@
             <p>Сканер QR: {{ translateAvailability(selectedPoint.serviceActivity.qrRead) }}</p>
             <p>Адаптация для людей с ОВЗ: {{ translateAvailability(selectedPoint.serviceActivity.wheelchair) }}</p>
           </div>
-
-          <button @click="openModal" class="bg-gray-200 text-blue-600 px-2 py-2 rounded-full mb-2 w-full hover:bg-gray-300">
-            Запись онлайн
-          </button>
-          <button
-              @click="openYandexMapsRoute(selectedPoint)"
-              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full hover:bg-blue-600"
-          >
-            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
-          </button>
         </div>
 
         <div v-else>
@@ -356,19 +349,19 @@ export default {
     submitForm() {
       const ticketNumber = Math.floor(Math.random() * (30000 - 3000 + 1)) + 3000;
       // Проверьте и обработайте ваши данные здесь, например:
-      const params = {
+      const formData = {
         ticketNumber: ticketNumber,
         ticketOwnerName: this.name,
         ticketOwnerEmail: this.email,
-        salePointId: this.selectedPoint.id
+        salePointId: this.selectedPoint.id // предполагаемое имя модели для выпадающего списка
       };
 
-      axios.post("http://77.91.86.52:3000/ticket", null, { params: params })
+      axios.post("http://77.91.86.52:3000/ticket", formData)
           .then(response => {
             this.isSuccess = true; // Устанавливаем isSuccess в true после успешного выполнения
           })
           .catch(error => {
-            console.error('Ошибка при создании билета:', error);
+            console.error('Ошибка при получении данных офисов:', error);
           });
     },
     translateSupport(value) {
@@ -410,7 +403,7 @@ export default {
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
 
-      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=6.79`;
+      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=15`;
       window.open(yandexMapsUrl, '_blank');
     },
     setActiveView(view) {

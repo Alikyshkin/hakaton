@@ -1,26 +1,16 @@
 import {
     Controller,
-    Post,
     Get,
     Param,
-    UseInterceptors,
-    BadRequestException,
-    UploadedFile
 } from '@nestjs/common';
 import {
-    ApiBody,
-    ApiConsumes,
-    ApiCreatedResponse,
     ApiOkResponse,
     ApiOperation,
     ApiQuery,
     ApiTags
 } from '@nestjs/swagger';
 import { AtmService } from './atm.service';
-import { BulkCreateAtmDto } from '../dtos/bulk-create-atm.dto';
 import { AtmDto } from "../dtos/atm.dto";
-import { FileUploadDto } from "../dtos/file-upload.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags('atms')
 @Controller('atms')

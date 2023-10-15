@@ -4,7 +4,7 @@
       <span>Chatbot</span>
     </div>
     <div v-if="chatOpen" class="chat-area overflow-y-auto px-4 py-6 flex flex-col gap-3" ref="messageBox">
-      <div v-for="msg in messages" :key="msg.id" class="chat-message-div flex">
+      <div v-for="msg in messages" :key="msg.id" class="chat-message-div flex justify-end">
         <div v-if="msg.type === 'sent'" class="chat-message-sent bg-blue-500 text-white rounded-bl-lg rounded-tl-lg rounded-tr-lg py-2 px-3 self-end">
           {{ msg.text }}
         </div>
@@ -13,11 +13,11 @@
         </div>
       </div>
 
-      <div v-if="chatOpen" class="questions-textfield popular-questions flex-grow px-4 py-2 focus:outline-none flex flex-row">
-        <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 rounded-md hover:bg-gray-400">
-          {{ question }}
-        </button>
-      </div>
+<!--      <div v-if="chatOpen" class="questions-textfield popular-questions flex-grow px-4 py-2 focus:outline-none flex flex-row">-->
+<!--        <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 rounded-md hover:bg-gray-400">-->
+<!--          {{ question }}-->
+<!--        </button>-->
+<!--      </div>-->
     </div>
       <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4 chatbot-textfield">
       <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" v-model="message" name="message" type="text" placeholder="Type your message ..." />
@@ -51,12 +51,16 @@ export default {
       this.chatOpen = !this.chatOpen;
     },
     send(msg) {
+      if (!msg || typeof msg !== 'string') {
+        msg = this.message;
+      }
       if (!msg) return;
       this.addMsg(msg);
       setTimeout(() => {
         this.addResponseMsg(msg);
       }, 500);
     },
+
     addMsg(msg) {
       this.messages.push({ id: this.messageIdCounter++, type: 'sent', text: msg });
       this.message = '';

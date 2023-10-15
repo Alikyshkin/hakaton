@@ -60,17 +60,32 @@ export default {
     toggleChat() {
       this.chatOpen = !this.chatOpen;
     },
-    send(msg) {
+    async send(msg) {
       if (!msg || typeof msg !== 'string') {
         msg = this.message;
       }
       if (!msg) return;
       this.addMsg(msg);
-      setTimeout(() => {
-        this.addResponseMsg(msg);
-      }, 500);
+      await this.sendWebhookRequest(msg); // Отправляем webhook-запрос
     },
+    async sendWebhookRequest(msg) {
+      try {
+        const response = await axios.post('https://example.com/your-webhook', {
+          version: "323c332b978ffee64bbf94d4b61a52b5c23782b3710873cbf00abc371d23ce12",
+          input: {
+            prompt: msg
+          },
+          webhook: "https://example.com/your-webhook",
+          webhook_events_filter: ["completed"]
+        });
 
+        const serverResponse = response.data; // Можете адаптировать это под структуру вашего ответа
+        this.messages.push({ id: this.messageIdCounter++, type: 'received', text: serverResponse });
+      } catch (error) {
+        console.error("Ошибка при отправке webhook-запроса:", error);
+        this.messages.push({ id: this.messageIdCounter++, type: 'received', text: "Извините, я временно недоступен :(" });
+      }
+    },
     addMsg(msg) {
       this.messages.push({id: this.messageIdCounter++, type: 'sent', text: msg});
       this.message = '';

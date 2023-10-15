@@ -1,49 +1,31 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SalePoint } from '../entities/sale-point.entity';
-import { Atm } from '../entities/atm.entity';
+import {Injectable} from '@nestjs/common';
 import {AtmAndSalePointSearchDto} from "../dtos/atm-and-sale-point-search.dto";
+import {SalePointService} from "../sale-point/sale-point.service";
+import {SalePointDto} from "../dtos/sale-point.dto";
+import {AtmDto} from "../dtos/atm.dto";
+import {AtmService} from "../atm/atm.service";
 
 @Injectable()
 export class SearchService {
     constructor(
-        @InjectRepository(SalePoint) private salePointRepository: Repository<SalePoint>,
-        @InjectRepository(Atm) private atmRepository: Repository<Atm>
+        private salePointService: SalePointService,
+        private atmService: AtmService
     ) {}
 
     async searchSalePointsAndAtms(pattern: string, clientType?: 'individual' | 'business' | 'both'): Promise<AtmAndSalePointSearchDto> {
-        if (!pattern || pattern.trim() === '') {
-            throw new BadRequestException('Search pattern should not be empty');
-        }
+        const salePoints: SalePointDto[] = await this.salePointService.findByPatternAndClientType(pattern, clientType);
 
-        const salePointQueryBuilder = this.salePointRepository.createQueryBuilder('salePoint')
-            .leftJoinAndSelect('salePoint.openHours', 'openHours')
-            .leftJoinAndSelect('salePoint.openHoursIndividual', 'openHoursIndividual')
-            .where('salePoint.salePointName ILIKE :pattern', { pattern: `%${pattern}%` })
-            .orWhere('salePoint.address ILIKE :pattern', { pattern: `%${pattern}%` });
-
-        if (clientType === 'individual') {
-            salePointQueryBuilder.andWhere('openHoursIndividual.id IS NOT NULL');
-        } else if (clientType === 'business') {
-            salePointQueryBuilder.andWhere('openHours.id IS NOT NULL');
-        }
-
-        const salePoints = await salePointQueryBuilder.getMany();
-
-        let atms = [];
+        let atms: AtmDto[] = [];
 
         if (clientType !== 'business') {
-            atms = await this.atmRepository.createQueryBuilder('atm')
-                .where('atm.address ILIKE :pattern', { pattern: `%${pattern}%` })
-                .getMany();
+            atms = await this.atmService.findByPattern(pattern);
         }
 
         return this.toDto(salePoints, atms);
     }
 
 
-    private toDto(salePoints: SalePoint[], atms: Atm[]): AtmAndSalePointSearchDto {
+    private toDto(salePoints: SalePointDto[], atms: AtmDto[]): AtmAndSalePointSearchDto {
         const dto = new AtmAndSalePointSearchDto();
 
         dto.salePoints = salePoints;

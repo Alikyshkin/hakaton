@@ -36,6 +36,40 @@ export class SalePointService {
         return salePoints.map(salePoint => this.toDto(salePoint));
     }
 
+    async findByClientType(clientType?: 'individual' | 'business' | 'both'): Promise<SalePoint[]> {
+        const salePointQueryBuilder = this.salePointRepository.createQueryBuilder('salePoint')
+            .leftJoinAndSelect('salePoint.openHours', 'openHours')
+            .leftJoinAndSelect('salePoint.openHoursIndividual', 'openHoursIndividual');
+
+        if (clientType === 'individual') {
+            salePointQueryBuilder.andWhere('openHoursIndividual.id IS NOT NULL');
+        } else if (clientType === 'business') {
+            salePointQueryBuilder.andWhere('openHours.id IS NOT NULL');
+        }
+
+        return await salePointQueryBuilder.getMany();
+    }
+
+    async findByPatternAndClientType(pattern: string, clientType?: 'individual' | 'business' | 'both'): Promise<SalePointDto[]> {
+        if (!pattern || pattern.trim() === '') {
+            throw new BadRequestException('Search pattern should not be empty');
+        }
+
+        const salePointQueryBuilder = this.salePointRepository.createQueryBuilder('salePoint')
+            .leftJoinAndSelect('salePoint.openHours', 'openHours')
+            .leftJoinAndSelect('salePoint.openHoursIndividual', 'openHoursIndividual')
+            .where('salePoint.salePointName ILIKE :pattern', { pattern: `%${pattern}%` })
+            .orWhere('salePoint.address ILIKE :pattern', { pattern: `%${pattern}%` });
+
+        if (clientType === 'individual') {
+            salePointQueryBuilder.andWhere('openHoursIndividual.id IS NOT NULL');
+        } else if (clientType === 'business') {
+            salePointQueryBuilder.andWhere('openHours.id IS NOT NULL');
+        }
+
+        return (await salePointQueryBuilder.getMany()).map(point => this.toDto(point));
+    }
+
     // async findByPattern(pattern: string): Promise<SalePointDto[]> {
     //     if (!pattern || pattern.trim() == '') {
     //         throw new BadRequestException('Pattern is empty');
@@ -143,8 +177,6 @@ export class SalePointService {
 
 
     private toDto(salePoint: SalePoint): SalePointDto {
-        const dto = new SalePointDto();
-        Object.assign(dto, salePoint);
-        return dto;
+        return new SalePointDto(salePoint);
     }
 }

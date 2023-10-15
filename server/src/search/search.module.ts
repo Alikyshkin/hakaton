@@ -4,9 +4,11 @@ import { SearchService } from './search.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Atm} from "../entities/atm.entity";
 import {SalePoint} from "../entities/sale-point.entity";
+import {AtmModule} from "../atm/atm.module";
+import {SalePointModule} from "../sale-point/sale-point.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Atm, SalePoint])],
+  imports: [AtmModule, SalePointModule],
   controllers: [SearchController],
   providers: [SearchService]
 })

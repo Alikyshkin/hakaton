@@ -11,8 +11,11 @@ import {OpenHour} from "./entities/open-hour.entity";
 import {SalePointModule} from './sale-point/sale-point.module';
 import {AtmModule} from './atm/atm.module';
 import {Ticket} from "./entities/ticket.entity";
-import { TicketModule } from './ticket/ticket.module';
-import { SearchModule } from './search/search.module';
+import {TicketModule} from './ticket/ticket.module';
+import {SearchModule} from './search/search.module';
+import {ReplicateProvider} from "./providers/replicate.provider";
+import {ChatModule} from './chat/chat.module';
+import {NearestSalePointModule} from './nearest-sale-point/nearest-sale-point.module';
 
 @Module({
     imports: [
@@ -35,10 +38,13 @@ import { SearchModule } from './search/search.module';
         AtmModule,
         TypeOrmModule.forFeature([OpenHour]),
         TicketModule,
-        SearchModule
+        SearchModule,
+        ChatModule,
+        NearestSalePointModule
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, ReplicateProvider],
+    exports: [ReplicateProvider]
 })
 export class AppModule {
 }

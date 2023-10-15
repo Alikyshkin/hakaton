@@ -9,6 +9,7 @@ import {ServiceActivity} from "../entities/service-activity.entity";
 @Module({
   imports: [TypeOrmModule.forFeature([Atm, ServiceCapability, ServiceActivity])],
   providers: [AtmService],
-  controllers: [AtmController]
+  controllers: [AtmController],
+  exports: [AtmService]
 })
 export class AtmModule {}

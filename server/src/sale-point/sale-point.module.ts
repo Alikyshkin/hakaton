@@ -8,7 +8,8 @@ import {OpenHour} from "../entities/open-hour.entity";
 @Module({
     imports: [TypeOrmModule.forFeature([SalePoint, OpenHour])],
     controllers: [SalePointController],
-    providers: [SalePointService]
+    providers: [SalePointService],
+    exports: [SalePointService]
 })
 export class SalePointModule {
 }

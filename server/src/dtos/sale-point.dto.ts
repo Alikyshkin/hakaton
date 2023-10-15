@@ -1,7 +1,12 @@
 import { OpenHour } from "../entities/open-hour.entity";
 import {ApiProperty} from "@nestjs/swagger";
+import {SalePoint} from "../entities/sale-point.entity";
 
 export class SalePointDto {
+    constructor(salePoint: SalePoint) {
+        Object.assign(this, salePoint);
+    }
+
     @ApiProperty()
     id: number;
 

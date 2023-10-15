@@ -8,6 +8,7 @@ import {SalePoint} from "../entities/sale-point.entity";
 @Module({
   imports: [TypeOrmModule.forFeature([Ticket, SalePoint])],
   controllers: [TicketController],
-  providers: [TicketService]
+  providers: [TicketService],
+  exports: [TicketService]
 })
 export class TicketModule {}

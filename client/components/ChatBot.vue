@@ -146,5 +146,10 @@ transition: transform 0.3s ease-in-out;
   bottom: 60px;
   /*width: 90%;*/
 }
+.chat-area {
+  max-height: calc(100% - 120px); /* Высота области минус высота заголовка и инпута */
+  overflow-y: auto;
+}
+
 
 </style>

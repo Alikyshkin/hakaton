@@ -3,11 +3,24 @@
     <div v-if="chatOpen" class="main-title bg-blue-600 text-white p-4 font-bold flex items-center">
       <span>Chatbot</span>
     </div>
-    <div v-if="chatOpen" class="chat-area overflow-y-auto px-4 py-6 flex flex-col gap-3">
-      <!-- Add your chat messages here -->
+    <div v-if="chatOpen" class="chat-area overflow-y-auto px-4 py-6 flex flex-col gap-3" ref="messageBox">
+      <div v-for="msg in messages" :key="msg.id" class="chat-message-div flex">
+        <div v-if="msg.type === 'sent'" class="chat-message-sent bg-blue-500 text-white rounded-bl-lg rounded-tl-lg rounded-tr-lg py-2 px-3 self-end">
+          {{ msg.text }}
+        </div>
+        <div v-if="msg.type === 'received'" class="chat-message-received bg-gray-300 rounded-br-lg rounded-tl-lg rounded-tr-lg py-2 px-3 self-start">
+          {{ msg.text }}
+        </div>
+      </div>
+
+      <div v-if="chatOpen" class="questions-textfield popular-questions flex-grow px-4 py-2 focus:outline-none flex flex-row">
+        <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 lg:px-72 rounded-md hover:bg-gray-400">
+          {{ question }}
+        </button>
+      </div>
     </div>
-    <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4">
-      <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" name="message" type="text" placeholder="Type your message ..." />
+      <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4 chatbot-textfield">
+      <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" v-model="message" name="message" type="text" placeholder="Type your message ..." />
       <button class="input-send focus:outline-none" @click="send">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-blue-600"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path></svg>
       </button>
@@ -26,10 +39,11 @@
 export default {
   data() {
     return {
-      collapsed: true,
+      chatOpen: false,
       message: '',
-      chatOpen: false
-
+      messages: [],
+      popularQuestions: ["Вопрос 1", "Вопрос 2", "Вопрос 3"],
+      messageIdCounter: 0
     };
   },
   methods: {
@@ -37,34 +51,27 @@ export default {
       this.chatOpen = !this.chatOpen;
     },
     send(msg) {
-      if (this.running || !msg) return;
-      this.running = true;
+      if (!msg) return;
       this.addMsg(msg);
       setTimeout(() => {
         this.addResponseMsg(msg);
       }, 500);
     },
     addMsg(msg) {
-      const div = document.createElement("div");
-      div.innerHTML = `<span class="flex-grow"></span><div class='chat-message-sent'>${msg}</div>`;
-      div.className = "chat-message-div";
-      this.$refs.messageBox.appendChild(div);
-      this.message = "";
-      this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight;
+      this.messages.push({ id: this.messageIdCounter++, type: 'sent', text: msg });
+      this.message = '';
     },
     addResponseMsg(msg) {
       const response = this.getResponseForMsg(msg);
-      const div = document.createElement("div");
-      div.innerHTML = `<div class='chat-message-received'>${response}</div>`;
-      div.className = "chat-message-div";
-      this.$refs.messageBox.appendChild(div);
-      this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight;
-      this.running = false;
+      this.messages.push({ id: this.messageIdCounter++, type: 'received', text: response });
     },
     getResponseForMsg(msg) {
-      // This is where you can add your custom logic to respond to messages.
-      // For now, I'm returning a simple response:
-      return `Response to: ${msg}`;
+      const predefinedAnswers = {
+        "Вопрос 1": "Ответ на вопрос 1",
+        "Вопрос 2": "Ответ на вопрос 2",
+        "Вопрос 3": "Ответ на вопрос 3"
+      };
+      return predefinedAnswers[msg] || "Извините, на данный вопрос у меня нет ответа.";
     }
   }
 };
@@ -76,6 +83,18 @@ export default {
   position: fixed;
   bottom: 15px;
   left: 15px;
+  transition: all 0.5s ease-in-out;
+
+}
+/* Rotation for the chat toggle button */
+.chatbot-toggle {
+  /* Add transition for smooth rotation */
+transition: transform 0.3s ease-in-out;
+}
+
+/* Rotate the button when chat is open */
+.chatbot-toggle svg[v-if="chatOpen"] {
+  transform: rotate(180deg);
 }
 
 @media (min-width: 450px) {
@@ -111,4 +130,17 @@ export default {
 .pulse {
   animation: pulse 2s infinite;
 }
+
+.chatbot-textfield {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.questions-textfield {
+  position: absolute;
+  bottom: 60px;
+  width: 90%;
+}
+
 </style>

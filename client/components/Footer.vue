@@ -1,7 +1,8 @@
 <template>
+  <div>
   <div class="bg p-10 rounded-md shadow-md">
     <div class="container mx-auto pt-4s">
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid sm:grid-rows-3 sm:grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Левая колонка -->
         <div class="space-y-4">
           <div class="text-xl">1000
@@ -15,29 +16,34 @@
           </div>
         </div>
 
-        <!-- Средняя колонка -->
-        <div class="space-y-4">
-          <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Отделения и банкоматы</div>
-          <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Курсы валют</div>
-          <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Контакты</div>
-          <!-- и так далее... -->
-        </div>
+          <!-- Средняя колонка -->
+          <div class="space-y-4">
+            <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Отделения и банкоматы</div>
+            <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Курсы валют</div>
+            <div class="font-medium hover:text-blue-600 hover:cursor-pointer">Контакты</div>
+            <!-- и так далее... -->
+          </div>
 
-        <!-- Правая колонка -->
-        <div class="space-y-4">
-          <div class="hover:cursor-pointer">О банке</div>
-          <div class="hover:cursor-pointer">О группе</div>
-          <div class="hover:cursor-pointer">Реквизиты</div>
-          <!-- и так далее... -->
+          <!-- Правая колонка -->
+          <div class="space-y-4">
+            <div class="hover:cursor-pointer">О банке</div>
+            <div class="hover:cursor-pointer">О группе</div>
+            <div class="hover:cursor-pointer">Реквизиты</div>
+            <!-- и так далее... -->
+          </div>
         </div>
       </div>
     </div>
+    <ChatBot></ChatBot>
   </div>
 </template>
 
 <script>
+import ChatBot from '../components/ChatBot.vue';
+
 export default {
-  name: "Footer"
+  name: "Footer",
+  components: {ChatBot},
 }
 </script>
 

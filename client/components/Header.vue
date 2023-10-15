@@ -9,7 +9,7 @@
           <CitySelector></CitySelector>
         </div>
       </div>
-      <button @click="toggleMenu" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" :aria-expanded="isMenuOpen ? 'true' : 'false'">
+      <button @click="toggleMenu" type="button" class="burger-toggle inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" :aria-expanded="isMenuOpen ? 'true' : 'false'">
         <span class="sr-only">Open main menu</span>
         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
@@ -21,7 +21,7 @@
             <a href="https://online.vtb.ru/" target="_blank" class="block py-2 pl-3 pr-4 rounded md:bg-transparent text-gray-900 md:p-0" aria-current="page">ВТБ ОНЛАЙН</a>
           </li>
           <li>
-            <nuxt-link to="/map/offices" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Карта</nuxt-link>
+            <nuxt-link to="/offices" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Карта</nuxt-link>
           </li>
           <li v-if="!isAuthenticated">
             <nuxt-link to="/authorization" class="block py-2 pl-3 pr-4 text-gray-900 md:p-0">Войти</nuxt-link>

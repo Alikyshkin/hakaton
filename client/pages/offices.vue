@@ -65,7 +65,16 @@
 
         <!-- Детальный просмотр -->
         <div v-if="selectedPoint" class="detail-view">
-          <h2 class="font-bold mb-2">{{ selectedPoint.salePointName || selectedPoint.address }}</h2>
+          <h2 class="font-bold mb-2 mt-4 mr-2">{{ selectedPoint.salePointName || selectedPoint.address }}</h2>
+          <button
+              @click="openYandexMapsRoute(selectedPoint)"
+              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full"
+          >
+            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
+          </button>
+          <button @click="openModal" class="bg-gray-200 text-blue-600 px-2 py-2 rounded-full mb-2 w-full hover:bg-gray-300">
+            Запись онлайн
+          </button>
 
           <!-- Details for office -->
           <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}
@@ -82,7 +91,7 @@
           <p v-if="typeof selectedPoint.hasRamp !== 'undefined'" class="mb-2"><span
               class="font-bold">Наличие рампы: </span>{{ selectedPoint.hasRamp ? 'Да' : 'Нет' }}</p>
           <p v-if="selectedPoint.metroStation" class="mb-2"><span
-              class="font-bold">Станция метро: </span>{{ selectedPoint.metroStation }}</p>
+              class="font-bold">Станция метро: <br></span>{{ selectedPoint.metroStation }}</p>
           <p v-if="typeof selectedPoint.kep !== 'undefined'" class="mb-2"><span
               class="font-bold">КЕП: </span>{{ selectedPoint.kep ? 'Да' : 'Нет' }}</p>
           <div v-if="selectedPoint.openHours" class="mb-2">
@@ -95,6 +104,59 @@
             <span class="font-bold">Часы работы для физических лиц: </span>
             <div v-for="hour in selectedPoint.openHoursIndividual" :key="hour.id" class="mb-1">
               {{ hour.days }}: {{ hour.hours }}
+            </div>
+          </div>
+          <!-- Модальное окно -->
+          <div v-if="showModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <!-- Задний фон -->
+              <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="closeModal"></div>
+              <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+              <!-- Модальное окно -->
+              <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div v-if="isSuccess" class="w-full text-center mt-10">
+                  <h2 class="text-xl font-bold mb-5">Спасибо!</h2>
+                  <p>Ваша заявка успешно отправлена.</p>
+                </div>
+
+                <div v-else class="sm:flex sm:items-start">
+                  <div class="w-full">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Запись онлайн</h3>
+                    <div class="mt-2">
+                      <div class="flex items-center mb-2">
+                        <label for="name" class="mr-2 w-1/3 text-right">Ваше имя:</label>
+                        <input id="name" type="text" v-model="name" placeholder="Введите имя" class="w-2/3 p-2 border rounded">
+                      </div>
+                      <div class="flex items-center mb-2">
+                        <label for="email" class="mr-2 w-1/3 text-right">Адрес почты:</label>
+                        <input id="email" type="email" v-model="email" placeholder="Введите адрес" class="w-2/3 p-2 border rounded">
+                      </div>
+                      <div class="flex items-center">
+                        <label for="service" class="mr-2 w-1/3 text-right">Услуга:</label>
+                        <select id="service" v-model="selectedService" class="w-2/3 p-2 border rounded">
+                          <option value="service1">Потребительские кредиты</option>
+                          <option value="service2">Ипотека</option>
+                          <option value="service3">Дебетовые и кредитные карты</option>
+                          <option value="service4">Вклады</option>
+                          <option value="service5">Инвестиции</option>
+                          <option value="service6">Платежи и переводы</option>
+                          <option value="service7">Страхование</option>
+                          <option value="service8">Мобильное приложение и интернет-банк</option>
+                          <option value="service9">РКО</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                  <button @click="submitForm" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                    Записаться
+                  </button>
+                  <button @click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Закрыть
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -123,20 +185,13 @@
             <p>Сканер QR: {{ translateAvailability(selectedPoint.serviceActivity.qrRead) }}</p>
             <p>Адаптация для людей с ОВЗ: {{ translateAvailability(selectedPoint.serviceActivity.wheelchair) }}</p>
           </div>
-
-          <button
-              @click="openYandexMapsRoute(selectedPoint)"
-              class="bg-blue-500 text-white px-2 py-2 rounded-full mb-2 w-full"
-          >
-            Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
-          </button>
         </div>
 
         <div v-else>
           <!-- Offices -->
           <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.id"
                @click="selectPoint(point)"
-               class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
+               class="cursor-pointer transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
             <div class="flex items-center">
               <!-- Обновленная строка ниже -->
               <div :class="[circleColorClass(point), 'w-4 h-4 rounded-full mr-2 border-b border-gray-300']"></div>
@@ -144,7 +199,7 @@
             </div>
             <button
                 @click="openYandexMapsRoute(point)"
-                class="bg-blue-500 text-white px-1 py-2 rounded-full w-full"
+                class="bg-blue-500 text-white px-1 py-2 rounded-full w-full hover:bg-blue-600"
             >
               Проложить маршрут ({{ getRouteDistance(point) }} км)
             </button>
@@ -160,7 +215,7 @@
             </div>
             <button
                 @click.stop="openYandexMapsRoute(atm)"
-                class="bg-blue-500 text-white px-2 py-2 rounded-full w-full"
+                class="bg-blue-500 text-white px-2 py-2 rounded-full w-full hover:bg-blue-600"
             >
               Проложить маршрут ({{ getRouteDistance(atm) }} км)
             </button>
@@ -174,7 +229,11 @@
       :zoom="zoom"
   >
     <YandexClusterer :options="{ preset: 'islands#nightClusterIcons' }">
-      <YandexMarker :coordinates="myCoordinates" :marker-id="12345">
+      <YandexMarker
+          :coordinates="myCoordinates"
+          :marker-id="12345"
+          :options="{ preset: 'islands#darkGreenDotIcon'}"
+      >
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -182,7 +241,7 @@
       <div v-for="point in points" :key="point.id" @click="flyTo(point)"
            v-if="activeView === 'all' || activeView === 'offices'">
         <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address"
-                      :options="{ preset: 'islands#greenIcon'}">
+                      :options="{ preset: 'islands#nightLeisureIcon'}">
           <template #component class="w-50 h-50">
             <CustomBalloon v-model="name" class="w-50 h-50"/>
           </template>
@@ -190,7 +249,7 @@
       </div>
       <YandexMarker v-if="activeView === 'offices-one' && CurrentChoice.salePointName"
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
-                    :options="{ preset: 'islands#greenIcon'}">
+                    :options="{ preset: 'islands#nightLeisureIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -199,7 +258,7 @@
       <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)"
            v-if="activeView === 'all' || activeView === 'atms'">
         <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address"
-                      :options="{ preset: 'islands#redIcon'}">
+                      :options="{ preset: 'islands#blueMoneyIcon'}">
           <template #component class="w-50 h-50">
             <CustomBalloon v-model="name" class="w-50 h-50"/>
           </template>
@@ -207,7 +266,7 @@
       </div>
       <YandexMarker v-if="activeView === 'atms-one' && !CurrentChoice.salePointName"
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
-                    :options="{ preset: 'islands#redIcon'}">
+                    :options="{ preset: 'islands#blueMoneyIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -255,19 +314,21 @@ export default {
   data() {
     return {
       coordinates: null,
-      myCoordinates: [55.747072, 37.536403],
-      zoom: 14,
+      myCoordinates: [55.771875, 37.626667],
+      zoom: 15,
       points: null,
       atms: null,
+      isSuccess: false,
       selectedType: 'all',
       activeView: 'all',
-      name: 'Custom',
       selectedPoint: null,
       selectedTypes: [],
       searchQuery: '',
       routeDistance: null,
       CurrentChoice: null,
       PreviousView: null,
+      showModal: false,
+
     };
   },
   async mounted() {
@@ -277,6 +338,32 @@ export default {
     // this.fetchUserLocation();
   },
   methods: {
+    openModal() {
+      this.showModal = true;
+    },
+
+    closeModal() {
+      this.showModal = false;
+      this.isSuccess = false;
+    },
+    submitForm() {
+      const ticketNumber = Math.floor(Math.random() * (30000 - 3000 + 1)) + 3000;
+      // Проверьте и обработайте ваши данные здесь, например:
+      const formData = {
+        ticketNumber: ticketNumber,
+        ticketOwnerName: this.name,
+        ticketOwnerEmail: this.email,
+        salePointId: this.selectedPoint.id // предполагаемое имя модели для выпадающего списка
+      };
+
+      axios.post("http://77.91.86.52:3000/ticket", formData)
+          .then(response => {
+            this.isSuccess = true; // Устанавливаем isSuccess в true после успешного выполнения
+          })
+          .catch(error => {
+            console.error('Ошибка при получении данных офисов:', error);
+          });
+    },
     translateSupport(value) {
       switch (value) {
         case 'SUPPORTED':
@@ -316,7 +403,7 @@ export default {
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
 
-      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=6.79`;
+      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=15`;
       window.open(yandexMapsUrl, '_blank');
     },
     setActiveView(view) {

@@ -1,7 +1,7 @@
 <template>
   <div class="w-50 h-50">
 <!--    {{ modelValue }}-->
-    <button @click="updateValue">Сюда!</button>
+    <button @click="updateValue">Вы здесь!</button>
   </div>
 </template>
 

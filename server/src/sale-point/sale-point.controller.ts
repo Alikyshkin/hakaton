@@ -21,14 +21,14 @@ export class SalePointController {
 
     @Get()
     @ApiOkResponse({ type: [SalePointDto] })
-    @ApiOperation({ summary: 'Gets all sale points' })
+    @ApiOperation({ summary: 'Get all sale points' })
     async getAllSalePoints(): Promise<SalePointDto[]> {
         return this.salePointService.findAll();
     }
 
     @Get(':id')
     @ApiOkResponse({ type: SalePointDto })
-    @ApiOperation({ summary: 'Gets concrete sale point' })
+    @ApiOperation({ summary: 'Get concrete sale point' })
     async getSalePoint(@Param('id') id: number): Promise<SalePointDto> {
         return this.salePointService.findOne(id);
     }
@@ -37,7 +37,7 @@ export class SalePointController {
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: FileUploadDto })
     @ApiCreatedResponse({ type: [SalePointDto] })
-    @ApiOperation({ summary: 'Creates multiple sale points from a JSON file' })
+    @ApiOperation({ summary: 'Create multiple sale points from a JSON file' })
     @UseInterceptors(FileInterceptor('file'))
     async createBulk(@UploadedFile() file): Promise<SalePointDto[]> {
         if (!file) {

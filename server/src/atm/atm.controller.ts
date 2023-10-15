@@ -37,7 +37,7 @@ export class AtmController {
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: FileUploadDto })
     @ApiCreatedResponse({ type: [AtmDto] })
-    @ApiOperation({ summary: 'Create multiple ATMs' })
+    @ApiOperation({ summary: 'Create multiple ATMs from a JSON file' })
     @UseInterceptors(FileInterceptor('file'))
     async createBulk(@UploadedFile() file): Promise<AtmDto[]> {
         if (!file) {

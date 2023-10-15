@@ -24,7 +24,7 @@ export class TicketController {
     }
 
     @Post()
-    @ApiCreatedResponse({ type: TicketDto })
+    @ApiCreatedResponse({ type: CreateTicketDto })
     @ApiOperation({ summary: 'Create one ticket' })
     async create(@Param('ticket') createTicketDto: CreateTicketDto): Promise<TicketDto> {
         return this.ticketService.create(createTicketDto);

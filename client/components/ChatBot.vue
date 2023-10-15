@@ -14,7 +14,11 @@
           {{ msg.text }}
         </div>
       </div>
-
+            <div v-if="chatOpen" class="questions-textfield popular-questions flex-grow px-4 py-2 focus:outline-none flex flex-row">
+              <button v-for="question in popularQuestions" :key="question" @click="send(question)" class="bg-gray-200  p-2 m-2 rounded-md hover:bg-gray-400">
+                {{ question }}
+              </button>
+            </div>
     </div>
     <div v-if="chatOpen" class="input-div flex items-center gap-3 p-4 chatbot-textfield">
       <input class="input-message flex-grow px-4 py-2 border rounded focus:outline-none" v-model="message"
@@ -52,7 +56,7 @@ export default {
       chatOpen: false,
       message: '',
       messages: [],
-      popularQuestions: ["Вопрос 1", "Вопрос 2", "Вопрос 3"],
+      popularQuestions: ["Хочу открыть кредитную карту"],
       messageIdCounter: 0
     };
   },
@@ -64,9 +68,15 @@ export default {
       if (!msg || typeof msg !== 'string') {
         msg = this.message;
       }
+    //   if (!msg) return;
+    //   this.addMsg(msg);
+    //   await this.sendWebhookRequest(msg); // Отправляем webhook-запрос
+    // },
       if (!msg) return;
       this.addMsg(msg);
-      await this.sendWebhookRequest(msg); // Отправляем webhook-запрос
+      setTimeout(() => {
+        this.addResponseMsg(msg);
+      }, 500);
     },
     async sendWebhookRequest(msg) {
       try {
@@ -96,11 +106,11 @@ export default {
     },
     getResponseForMsg(msg) {
       const predefinedAnswers = {
-        "Вопрос 1": "Ответ на вопрос 1",
-        "Вопрос 2": "Ответ на вопрос 2",
-        "Вопрос 3": "Ответ на вопрос 3"
+        "Хочу открыть кредитную карту": "Для начала, мне нужно узнать, почему вы хотите открыть кредитную карту? Какие планы у вас на использование этой карты?",
+        // "Вопрос 2": "Ответ на вопрос 2",
+        // "Вопрос 3": "Ответ на вопрос 3"
       };
-      return predefinedAnswers[msg] || "Извините, на данный вопрос у меня нет ответа.";
+      return predefinedAnswers[msg] || "Нет, не мне. Я работаю в банке и моя задача - помочь клиентам с вопросами, связанными с банковскими услугами. ";
     }
   }
 };

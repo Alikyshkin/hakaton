@@ -60,6 +60,9 @@
                 </svg>
               </button>
             </form>
+            <button  v-if="searchQuery" @click="resetSearch" class="px-4 py-2 border rounded-full mt-2 w-full">
+              Сбросить поиск
+            </button>
           </div>
         </div>
 
@@ -210,7 +213,7 @@
                @click="selectPoint(atm)"
                class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
             <div class="flex items-center">
-              <div class="bg-red-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
+              <div class="bg-green-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
               <p class="mb-1">{{ atm.address }}</p>
             </div>
             <button
@@ -338,10 +341,34 @@ export default {
     // this.fetchUserLocation();
   },
   methods: {
-    openModal() {
-      this.showModal = true;
-    },
+    async performSearch() {
+      if (!this.searchQuery) return;  // проверка на пустой запрос
 
+      try {
+        const response = await axios.get(`http://77.91.86.52:3000/search?pattern=${this.searchQuery}`);
+        this.points = response.data.salePoints;  // обновление данных на странице
+        this.atms = response.data.atms;  // обновление данных на странице
+      } catch (error) {
+        console.error('Ошибка при поиске:', error);
+      }
+    },
+    async resetSearch() {
+      this.searchQuery = '';
+      try {
+        const response = await axios.get('http://77.91.86.52:3000/sale-point');
+        this.points = response.data;
+      } catch (error) {
+        console.error('Ошибка при сбросе поиска:', error);
+      }
+    },
+    openModal() {
+      const isAuth = localStorage.getItem('auth') === 'true';
+      if (isAuth) {
+        this.showModal = true;
+      } else {
+        alert('Пожалуйста, войдите, чтобы продолжить');
+      }
+    },
     closeModal() {
       this.showModal = false;
       this.isSuccess = false;
@@ -403,7 +430,7 @@ export default {
       const myLat = Reflect.get(this.myCoordinates, 0);
       const myLong = Reflect.get(this.myCoordinates, 1);
 
-      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=15`;
+      const yandexMapsUrl = `https://yandex.ru/maps/?ll=${myLong}%2C${myLat}&mode=routes&rtext=${myLat}%2C${myLong}~${latitude}%2C${longitude}&rtt=auto&ruri=~&z=6.79`;
       window.open(yandexMapsUrl, '_blank');
     },
     setActiveView(view) {

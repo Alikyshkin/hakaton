@@ -1,4 +1,4 @@
-import {Controller, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from "@nestjs/swagger";
 import {TicketDto} from "../dtos/ticket.dto";
 import {TicketService} from "./ticket.service";
@@ -26,7 +26,7 @@ export class TicketController {
     @Post()
     @ApiCreatedResponse({ type: CreateTicketDto })
     @ApiOperation({ summary: 'Create one ticket' })
-    async create(@Param('ticket') createTicketDto: CreateTicketDto): Promise<TicketDto> {
+    async create(@Body() createTicketDto: CreateTicketDto): Promise<TicketDto> {
         return this.ticketService.create(createTicketDto);
     }
 }

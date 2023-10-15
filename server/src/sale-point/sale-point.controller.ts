@@ -1,5 +1,5 @@
 import {
-    BadRequestException,
+    BadRequestException, Body,
     Controller,
     Get,
     Param,
@@ -14,6 +14,7 @@ import {ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation} f
 import {FileInterceptor} from "@nestjs/platform-express";
 import * as fs from "fs";
 import {FileUploadDto} from "../dtos/file-upload.dto";
+import {SearchSalePointsDto} from "../dtos/search-sale-points.dto";
 
 @Controller('sale-point')
 export class SalePointController {
@@ -24,6 +25,13 @@ export class SalePointController {
     @ApiOperation({ summary: 'Get all sale points' })
     async getAllSalePoints(): Promise<SalePointDto[]> {
         return this.salePointService.findAll();
+    }
+
+    @Get(':pattern')
+    @ApiOkResponse({ type: [SalePointDto] })
+    @ApiOperation({ summary: 'Search sale points by name and address' })
+    async searchSalePoints(@Param('pattern') pattern: string): Promise<SalePointDto[]> {
+        return this.salePointService.findByPattern(pattern);
     }
 
     @Get(':id')

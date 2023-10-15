@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
 import {SalePoint} from '../entities/sale-point.entity';
@@ -9,6 +9,7 @@ import {BulkCreateSalePointDto} from "../dtos/bulk-create-sale-point.dto";
 import {OpenHour} from "../entities/open-hour.entity";
 import {DayOfWeek} from "../enums/day-of-week.enum";
 import {OpenHourType} from "../enums/open-hour-type.enum";
+import {SearchSalePointsDto} from "../dtos/search-sale-points.dto";
 
 
 @Injectable()
@@ -35,6 +36,21 @@ export class SalePointService {
         return salePoints.map(salePoint => this.toDto(salePoint));
     }
 
+    async findByPattern(pattern: string): Promise<SalePointDto[]> {
+        if (!pattern || pattern.trim() == '') {
+            throw new BadRequestException('Pattern is empty');
+        }
+
+        pattern = pattern.trim();
+
+        const salePoints = await this.salePointRepository.createQueryBuilder('salePoint')
+            .where('salePoint.salePointName ILIKE :pattern', { pattern: `%${pattern}%` })
+            .orWhere('salePoint.address ILIKE :pattern', { pattern: `%${pattern}%` })
+            .getMany();
+
+        return salePoints.map(salePoint => this.toDto(salePoint));
+    }
+
     async create(createSalePointDto: CreateSalePointDto): Promise<SalePointDto> {
         const newSalePoint = await this.salePointRepository.save(createSalePointDto);
 
@@ -43,6 +59,8 @@ export class SalePointService {
 
     async createBulk(salePointsDto: BulkCreateSalePointDto[]): Promise<SalePointDto[]> {
         const createdSalePoints = await this.salePointRepository.save(salePointsDto.map(dto => this.fromBulkDtoToEntity(dto)));
+        await this.transformBulkDaysAndHours();
+
         return createdSalePoints.map(salePoint => this.toDto(salePoint));
     }
 

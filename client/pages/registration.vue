@@ -51,12 +51,12 @@ export default {
       users[this.username] = this.password;
       localStorage.setItem('users', JSON.stringify(users));
       alert('Регистрация успешна');
-      this.$router.push('/');  // Redirect to home page
+      this.$router.push('/');
     }
   }
 }
 </script>
 
 <style scoped>
-/* Ваши стили */
+
 </style>

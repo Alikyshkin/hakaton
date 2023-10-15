@@ -29,8 +29,35 @@ export class TicketService {
     }
 
     async findOne(id: number): Promise<TicketDto> {
-        const ticket = await this.ticketRepository.findOne({ where: { id }, relations: ['salePoint'] });
+        const ticket = await this.ticketRepository.createQueryBuilder('ticket')
+            .leftJoinAndSelect('ticket.salePoint', 'salePoint')
+            .select([
+                'ticket.id',
+                'ticket.ticketNumber',
+                'ticket.ticketOwnerEmail',
+                'ticket.ticketOwnerName',
+                'salePoint.id'
+            ])
+            .where('ticket.id = :id', { id })
+            .getOne();
+
         return this.toDto(ticket);
+    }
+
+    async findBySalePoint(salePoint: SalePoint): Promise<TicketDto[]> {
+        const tickets = await this.ticketRepository.createQueryBuilder('ticket')
+            .leftJoinAndSelect('ticket.salePoint', 'salePoint')
+            .select([
+                'ticket.id',
+                'ticket.ticketNumber',
+                'ticket.ticketOwnerEmail',
+                'ticket.ticketOwnerName',
+                'salePoint.id'
+            ])
+            .where('ticket.salePoint.id = :salePointId', { salePointId: salePoint.id })
+            .getMany();
+
+        return tickets.map(ticket => this.toDto(ticket));
     }
 
     async create(createTicketDto: CreateTicketDto): Promise<TicketDto> {

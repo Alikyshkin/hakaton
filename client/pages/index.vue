@@ -7,9 +7,6 @@
         <div class="relative mb-4 lg:flex lg:flex-col lg:items-center lg:justify-center">
           <img src="https://www.vtb.ru/media-files/vtb.ru/shared/images/hero/Gruppa_H_MapATM_1x.webp" alt="3D Map"
                class="object-cover rounded-md sm:px-44 md:px-44 lg:px-0">
-
-          <!-- Add your pins here if necessary -->
-
           <nuxt-link to="/offices">
             <button
                 class="bg-blue-600 text-white p-2 sm:w-full md:w-full lg:w-full lg:px-72 rounded-md hover:bg-blue-700">

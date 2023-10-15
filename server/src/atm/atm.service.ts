@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Atm } from '../entities/atm.entity';
@@ -29,6 +29,16 @@ export class AtmService {
         }
 
         return this.toDto(atm);
+    }
+
+    async findByPattern(pattern: string): Promise<AtmDto[]> {
+        if (!pattern || pattern.trim() === '') {
+            throw new BadRequestException('Search pattern should not be empty');
+        }
+
+        return (await this.atmRepository.createQueryBuilder('atm')
+            .where('atm.address ILIKE :pattern', { pattern: `%${pattern}%` })
+            .getMany()).map(atm => this.toDto(atm));
     }
 
     async createBulk(atmsData: BulkCreateAtmDto[]): Promise<AtmDto[]> {

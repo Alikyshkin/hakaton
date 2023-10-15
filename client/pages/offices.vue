@@ -2,7 +2,7 @@
   <div class="flex position-relative">
     <div class="position-absolute">
       <div class="bg-white fixed w-full md:absolute md:w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
-        <!-- Иконка крестика -->
+
         <div v-if="selectedPoint" class="absolute top-2 right-2 cursor-pointer" @click="resetSelectedPoint">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 90 90" fill="none">
             <path
@@ -12,7 +12,6 @@
         </div>
 
         <div v-if="!selectedPoint">
-          <!-- Buttons to toggle view -->
           <div class="flex flex-row flex-wrap gap-2 mb-2">
             <button
                 @click="setActiveView('all')"
@@ -60,7 +59,7 @@
                 </svg>
               </button>
             </form>
-            <button  v-if="searchQuery" @click="resetSearch" class="px-4 py-2 border rounded-full mt-2 w-full">
+            <button v-if="searchQuery" @click="resetSearch" class="px-4 py-2 border rounded-full mt-2 w-full">
               Сбросить поиск
             </button>
           </div>
@@ -75,11 +74,11 @@
           >
             Проложить маршрут ({{ getRouteDistance(selectedPoint) }} км)
           </button>
-          <button @click="openModal" class="bg-gray-200 text-blue-600 px-2 py-2 rounded-full mb-2 w-full hover:bg-gray-300">
+          <button @click="openModal"
+                  class="bg-gray-200 text-blue-600 px-2 py-2 rounded-full mb-2 w-full hover:bg-gray-300">
             Запись онлайн
           </button>
 
-          <!-- Details for office -->
           <p v-if="selectedPoint.status" class="mb-2"><span class="font-bold">Статус: </span>{{ selectedPoint.status }}
           </p>
           <p v-if="typeof selectedPoint.rko !== 'undefined'" class="mb-2"><span
@@ -110,13 +109,15 @@
             </div>
           </div>
           <!-- Модальное окно -->
-          <div v-if="showModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div v-if="showModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+               aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <!-- Задний фон -->
+
               <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="closeModal"></div>
               <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-              <!-- Модальное окно -->
-              <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+
+              <div
+                  class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                 <div v-if="isSuccess" class="w-full text-center mt-10">
                   <h2 class="text-xl font-bold mb-5">Спасибо!</h2>
                   <p>Ваша заявка успешно отправлена.</p>
@@ -128,11 +129,13 @@
                     <div class="mt-2">
                       <div class="flex items-center mb-2">
                         <label for="name" class="mr-2 w-1/3 text-right">Ваше имя:</label>
-                        <input id="name" type="text" v-model="name" placeholder="Введите имя" class="w-2/3 p-2 border rounded">
+                        <input id="name" type="text" v-model="name" placeholder="Введите имя"
+                               class="w-2/3 p-2 border rounded">
                       </div>
                       <div class="flex items-center mb-2">
                         <label for="email" class="mr-2 w-1/3 text-right">Адрес почты:</label>
-                        <input id="email" type="email" v-model="email" placeholder="Введите адрес" class="w-2/3 p-2 border rounded">
+                        <input id="email" type="email" v-model="email" placeholder="Введите адрес"
+                               class="w-2/3 p-2 border rounded">
                       </div>
                       <div class="flex items-center">
                         <label for="service" class="mr-2 w-1/3 text-right">Услуга:</label>
@@ -152,10 +155,12 @@
                   </div>
                 </div>
                 <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <button @click="submitForm" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                  <button @click="submitForm"
+                          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
                     Записаться
                   </button>
-                  <button @click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                  <button @click="closeModal"
+                          class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                     Закрыть
                   </button>
                 </div>
@@ -163,7 +168,7 @@
             </div>
           </div>
 
-          <!-- Details for ATM -->
+          <!-- Карточка деталей -->
           <p v-if="typeof selectedPoint.allDay !== 'undefined'" class="mb-2"><span
               class="font-bold">Круглосуточно: </span>{{ selectedPoint.allDay ? 'Да' : 'Нет' }}</p>
           <div v-if="selectedPoint.serviceCapability" class="mb-2">
@@ -191,12 +196,12 @@
         </div>
 
         <div v-else>
-          <!-- Offices -->
+          <!-- Офисы -->
           <div v-if="activeView === 'all' || activeView === 'offices'" v-for="point in filteredPoints" :key="point.id"
                @click="selectPoint(point)"
                class="cursor-pointer transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
             <div class="flex items-center">
-              <!-- Обновленная строка ниже -->
+
               <div :class="[circleColorClass(point), 'w-4 h-4 rounded-full mr-2 border-b border-gray-300']"></div>
               <p class="mb-1">{{ point.address }}</p>
             </div>
@@ -208,7 +213,7 @@
             </button>
           </div>
 
-          <!-- ATMs -->
+          <!-- Банкоматы -->
           <div v-if="activeView === 'all' || activeView === 'atms'" v-for="atm in filteredAtms" :key="atm.id"
                @click="selectPoint(atm)"
                class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
@@ -238,7 +243,7 @@
           :options="{ preset: 'islands#darkGreenDotIcon'}"
       >
         <template #component class="w-50 h-50">
-          <CustomBalloon v-model="name" class="w-50 h-50"/>
+          <CustomBalloon class="w-50 h-50"/>
         </template>
       </YandexMarker>
       <div v-for="point in points" :key="point.id" @click="flyTo(point)"
@@ -246,7 +251,7 @@
         <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address"
                       :options="{ preset: 'islands#nightLeisureIcon'}">
           <template #component class="w-50 h-50">
-            <CustomBalloon v-model="name" class="w-50 h-50"/>
+            <CustomBalloon class="w-50 h-50"/>
           </template>
         </YandexMarker>
       </div>
@@ -254,16 +259,16 @@
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
                     :options="{ preset: 'islands#nightLeisureIcon'}">
         <template #component class="w-50 h-50">
-          <CustomBalloon v-model="name" class="w-50 h-50"/>
+          <CustomBalloon class="w-50 h-50"/>
         </template>
       </YandexMarker>
 
-      <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)"
+      <div v-for="atm in atms" :key="atm.id" @click="flyTo(atm)"
            v-if="activeView === 'all' || activeView === 'atms'">
         <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address"
                       :options="{ preset: 'islands#blueMoneyIcon'}">
           <template #component class="w-50 h-50">
-            <CustomBalloon v-model="name" class="w-50 h-50"/>
+            <CustomBalloon class="w-50 h-50"/>
           </template>
         </YandexMarker>
       </div>
@@ -271,7 +276,7 @@
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
                     :options="{ preset: 'islands#blueMoneyIcon'}">
         <template #component class="w-50 h-50">
-          <CustomBalloon v-model="name" class="w-50 h-50"/>
+          <CustomBalloon class="w-50 h-50"/>
         </template>
       </YandexMarker>
 
@@ -281,11 +286,8 @@
 </template>
 
 <script>
-import {ref} from 'vue';
 import {yandexMap, yandexMarker, yandexClusterer} from 'vue-yandex-maps';
 import CustomBalloon from '../../components/CustomBalloon.vue';
-import officesData from '../../data/offices.json';
-import atmData from '../../data/atms.json';
 import axios from 'axios';
 
 function toRad(value) {
@@ -331,29 +333,27 @@ export default {
       CurrentChoice: null,
       PreviousView: null,
       showModal: false,
-
     };
   },
   async mounted() {
     await Promise.all([this.fetchOffices(), this.fetchATM()]);
-    // this.fetchOffices();
-    // this.fetchATM();
-    // this.fetchUserLocation();
   },
   methods: {
     async performSearch() {
-      if (!this.searchQuery) return;  // проверка на пустой запрос
+      if (!this.searchQuery) return;
 
       try {
-        const response = await axios.get(`http://77.91.86.52:3000/search?pattern=${this.searchQuery}`);
-        this.points = response.data.salePoints;  // обновление данных на странице
-        this.atms = response.data.atms;  // обновление данных на странице
+        const response = await axios.get(`http://77.91.86.52:3000/search?pattern=${this.searchQuery}&clientType=${this.userType}`);
+        this.points = response.data.salePoints;
+        this.atms = response.data.atms;
       } catch (error) {
         console.error('Ошибка при поиске:', error);
       }
     },
     async resetSearch() {
       this.searchQuery = '';
+      this.selectedTypes = [];
+
       try {
         const response = await axios.get('http://77.91.86.52:3000/sale-point');
         this.points = response.data;
@@ -375,17 +375,16 @@ export default {
     },
     submitForm() {
       const ticketNumber = Math.floor(Math.random() * (30000 - 3000 + 1)) + 3000;
-      // Проверьте и обработайте ваши данные здесь, например:
       const formData = {
         ticketNumber: ticketNumber,
         ticketOwnerName: this.name,
         ticketOwnerEmail: this.email,
-        salePointId: this.selectedPoint.id // предполагаемое имя модели для выпадающего списка
+        salePointId: this.selectedPoint.id
       };
 
       axios.post("http://77.91.86.52:3000/ticket", formData)
           .then(response => {
-            this.isSuccess = true; // Устанавливаем isSuccess в true после успешного выполнения
+            this.isSuccess = true;
           })
           .catch(error => {
             console.error('Ошибка при получении данных офисов:', error);
@@ -415,7 +414,6 @@ export default {
       this.selectedPoint = null;
       this.CurrentChoice = null;
       this.setActiveView(this.PreviousView);
-      // this.setActiveView('all');
     },
     getRouteDistance(point) {
       const {latitude, longitude} = point;

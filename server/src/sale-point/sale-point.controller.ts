@@ -27,12 +27,12 @@ export class SalePointController {
         return this.salePointService.findAll();
     }
 
-    @Get(':pattern')
-    @ApiOkResponse({ type: [SalePointDto] })
-    @ApiOperation({ summary: 'Search sale points by name and address' })
-    async searchSalePoints(@Param('pattern') pattern: string): Promise<SalePointDto[]> {
-        return this.salePointService.findByPattern(pattern);
-    }
+    // @Get(':pattern')
+    // @ApiOkResponse({ type: [SalePointDto] })
+    // @ApiOperation({ summary: 'Search sale points by name and address' })
+    // async searchSalePoints(@Param('pattern') pattern: string): Promise<SalePointDto[]> {
+    //     return this.salePointService.findByPattern(pattern);
+    // }
 
     @Get(':id')
     @ApiOkResponse({ type: SalePointDto })

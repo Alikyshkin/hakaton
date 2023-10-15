@@ -36,20 +36,20 @@ export class SalePointService {
         return salePoints.map(salePoint => this.toDto(salePoint));
     }
 
-    async findByPattern(pattern: string): Promise<SalePointDto[]> {
-        if (!pattern || pattern.trim() == '') {
-            throw new BadRequestException('Pattern is empty');
-        }
-
-        pattern = pattern.trim();
-
-        const salePoints = await this.salePointRepository.createQueryBuilder('salePoint')
-            .where('salePoint.salePointName ILIKE :pattern', { pattern: `%${pattern}%` })
-            .orWhere('salePoint.address ILIKE :pattern', { pattern: `%${pattern}%` })
-            .getMany();
-
-        return salePoints.map(salePoint => this.toDto(salePoint));
-    }
+    // async findByPattern(pattern: string): Promise<SalePointDto[]> {
+    //     if (!pattern || pattern.trim() == '') {
+    //         throw new BadRequestException('Pattern is empty');
+    //     }
+    //
+    //     pattern = pattern.trim();
+    //
+    //     const salePoints = await this.salePointRepository.createQueryBuilder('salePoint')
+    //         .where('salePoint.salePointName ILIKE :pattern', { pattern: `%${pattern}%` })
+    //         .orWhere('salePoint.address ILIKE :pattern', { pattern: `%${pattern}%` })
+    //         .getMany();
+    //
+    //     return salePoints.map(salePoint => this.toDto(salePoint));
+    // }
 
     async create(createSalePointDto: CreateSalePointDto): Promise<SalePointDto> {
         const newSalePoint = await this.salePointRepository.save(createSalePointDto);

@@ -1,7 +1,7 @@
 <template>
-  <div class="map-container ">
-    <div class="position-absolute ">
-      <div class="bg-white h-1/2 w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
+  <div class="map-container position-relative">
+    <div class="position-absolute">
+      <div class="bg-white fixed w-full md:absolute md:w-1/4 p-4 overflow-x-hidden overflow-y-auto sidebar-map ">
         <!-- Иконка крестика -->
         <div v-if="selectedPoint" class="absolute top-2 right-2 cursor-pointer" @click="resetSelectedPoint">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 90 90" fill="none">
@@ -138,7 +138,7 @@
                @click="selectPoint(point)"
                class="transition duration-300 hover:bg-gray-100 p-2 border-b border-gray-300 pt-4 pb-4 items-center">
             <div class="flex items-center">
-              <div class="bg-red-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
+              <div class="bg-blue-500 w-4 h-4 rounded-full mr-2 border-b border-gray-300"></div>
               <p class="mb-1">{{ point.address }}</p>
             </div>
             <button
@@ -437,8 +437,8 @@ export default {
 
 .sidebar-map {
   position: absolute;
-  top: 90px;
-  left: 15px;
+  /*top: 90px;*/
+  /*left: 15px;*/
   height: 80vh;
   z-index: 1;
   border-radius: 7px;
@@ -470,5 +470,13 @@ export default {
 
 .detail-view p {
   margin-bottom: 8px; /* Расстояние между пунктами */
+}
+
+@media (max-width: 768px) {
+  .sidebar-map {
+    height: 40%;
+    position: absolute;
+    bottom: 0;
+  }
 }
 </style>

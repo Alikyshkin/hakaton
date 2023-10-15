@@ -205,6 +205,7 @@
               <div :class="[circleColorClass(point), 'w-4 h-4 rounded-full mr-2 border-b border-gray-300']"></div>
               <p class="mb-1">{{ point.address }}</p>
             </div>
+            <p v-if="point.id === this.optimalOfficeId" class="text-sm text-red-500 mt-1">Это отделение оптимальное</p>
             <button
                 @click="openYandexMapsRoute(point)"
                 class="bg-blue-500 text-white px-1 py-2 rounded-full w-full hover:bg-blue-600"
@@ -320,6 +321,8 @@ export default {
     return {
       coordinates: null,
       myCoordinates: [55.771875, 37.626667],
+      latitude: 55.771875,
+      longitude: 37.626667,
       zoom: 15,
       points: null,
       atms: null,
@@ -333,10 +336,11 @@ export default {
       CurrentChoice: null,
       PreviousView: null,
       showModal: false,
+      optimalOfficeId: null,
     };
   },
   async mounted() {
-    await Promise.all([this.fetchOffices(), this.fetchATM()]);
+    await Promise.all([this.fetchOffices(), this.fetchATM(), this.getNearestSalePoint(this.latitude, this.longitude, 'individual')]);
   },
   methods: {
     async performSearch() {
@@ -442,6 +446,21 @@ export default {
         this.points = response.data;
       } catch (error) {
         console.error('Ошибка при получении данных офисов:', error);
+      }
+    },
+    async getNearestSalePoint(latitude, longitude, clientType) {
+      try {
+        const response = await axios.get('http://77.91.86.52:3000/nearest-sale-point', {
+          params: {
+            latitude: latitude,
+            longitude: longitude,
+            clientType: clientType
+          }
+        });
+        this.optimalOfficeId = response.data.id;
+      } catch (error) {
+        console.error("Ошибка при получении данных о ближайшей точке продажи:", error);
+        throw error;
       }
     },
     async fetchATM() {

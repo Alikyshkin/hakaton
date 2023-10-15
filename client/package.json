@@ -26,6 +26,7 @@
     "nuxt-start": "^2.17.1",
     "nuxt3": "^3.8.0-28284309.b3d3d7f4",
     "pinia": "^2.1.6",
+    "replicate": "^0.20.1",
     "vue-yandex-maps": "^1.1.0"
   }
 }

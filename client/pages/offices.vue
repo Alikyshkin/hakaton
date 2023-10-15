@@ -239,6 +239,7 @@
       <YandexMarker
           :coordinates="myCoordinates"
           :marker-id="12345"
+          :options="{ preset: 'islands#darkGreenDotIcon'}"
       >
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
@@ -247,7 +248,7 @@
       <div v-for="point in points" :key="point.id" @click="flyTo(point)"
            v-if="activeView === 'all' || activeView === 'offices'">
         <YandexMarker :coordinates="[point.latitude, point.longitude]" :marker-id="point.address"
-                      :options="{ preset: 'islands#greenIcon'}">
+                      :options="{ preset: 'islands#nightLeisureIcon'}">
           <template #component class="w-50 h-50">
             <CustomBalloon v-model="name" class="w-50 h-50"/>
           </template>
@@ -255,7 +256,7 @@
       </div>
       <YandexMarker v-if="activeView === 'offices-one' && CurrentChoice.salePointName"
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
-                    :options="{ preset: 'islands#greenIcon'}">
+                    :options="{ preset: 'islands#nightLeisureIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>
@@ -264,7 +265,7 @@
       <div v-for="atm in atms" :key="atm.address" @click="flyTo(atm)"
            v-if="activeView === 'all' || activeView === 'atms'">
         <YandexMarker :coordinates="[atm.latitude, atm.longitude]" :marker-id="atm.address"
-                      :options="{ preset: 'islands#redIcon'}">
+                      :options="{ preset: 'islands#blueMoneyIcon'}">
           <template #component class="w-50 h-50">
             <CustomBalloon v-model="name" class="w-50 h-50"/>
           </template>
@@ -272,7 +273,7 @@
       </div>
       <YandexMarker v-if="activeView === 'atms-one' && !CurrentChoice.salePointName"
                     :coordinates="[CurrentChoice.latitude, CurrentChoice.longitude]" :marker-id="CurrentChoice.address"
-                    :options="{ preset: 'islands#redIcon'}">
+                    :options="{ preset: 'islands#blueMoneyIcon'}">
         <template #component class="w-50 h-50">
           <CustomBalloon v-model="name" class="w-50 h-50"/>
         </template>

@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       isMenuOpen: false,
-      isAuthenticated: process.client ? this.checkAuthStatus() : false,  // обновлено здесь
+      isAuthenticated: process.client ? this.checkAuthStatus() : false,
       isDarkMode: false
     }
   },
@@ -56,32 +56,17 @@ export default {
     },
     checkAuthStatus() {
       if (process.client) {
-        return localStorage.getItem('auth') === 'true';  // обновлено здесь
+        return localStorage.getItem('auth') === 'true';
       }
       return false;
     },
     logout() {
-      if (process.client) {  // обновлено здесь
+      if (process.client) {
         localStorage.setItem('auth', 'false');
       }
       this.isAuthenticated = false;
     },
-    toggleTheme() {
-      this.isDarkMode = !this.isDarkMode;
-    }
   },
-  watch: {
-    isDarkMode(newVal) {
-      if (process.client) {
-        document.documentElement.setAttribute('data-theme', newVal ? 'dark' : 'light');
-      }
-    }
-  },
-  mounted() {
-    if (process.client) {
-      this.isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-    }
-  }
 }
 </script>
 

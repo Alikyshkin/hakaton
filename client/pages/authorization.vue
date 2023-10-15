@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
@@ -55,5 +55,5 @@ export default {
 </script>
 
 <style scoped>
-/* Ваши стили */
+
 </style>
